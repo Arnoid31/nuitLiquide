@@ -10,6 +10,7 @@
   "description": "API de démocratie liquide, développée très rapidement dans le cadre de Nuit Debout",
   "dependencies": {
     "body-parser": "~1.15.0",
+    "crypto": "0.0.3",
     "express": "~4.13.4",
     "mysql": "^2.10.2",
     "path": "~0.12.7"
