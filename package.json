@@ -1,0 +1,17 @@
+{
+  "name": "NuitLiquide",
+  "version": "0.1.0",
+  "author": "Arnaud Commelin <arnaud.commelin@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Arnoid31/node_todolist"
+  },
+  "license": "GPL-3.0",
+  "description": "API de démocratie liquide, développée très rapidement dans le cadre de Nuit Debout",
+  "dependencies": {
+    "body-parser": "~1.15.0",
+    "express": "~4.13.4",
+    "mysql": "^2.10.2",
+    "path": "~0.12.7"
+  }
+}

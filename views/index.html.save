@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Ma Todolist</title>
+	</head>
+
+	<body>
+		<div id="main-content"></div>
+	</body>
+</html>
+
+<script type="x-template" id="main-template">
+	<h1>Ma Todolist</h1>
+	<table>
+		<th>ID</th>
+		<th>Content</th>
+		{{#todos}}
+			<tr>
+				<td>{{id}}</td>
+				<td>{{content}}</td>
+				<td>
+					<button on-click="delete:{{id}}">x</button>
+				</td>
+			</tr>
+		{{/todo}}
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="text" value="{{newTodo}}"/>
+			</td>
+			<td>
+				<button on-click="add">Add</button>
+			</td>
+		</tr>
+	</table>
+	<button on-click="deleteAll">Reset !</button>
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script src="//cdn.ractivejs.org/latest/ractive.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/amplifyjs/1.1.0/amplify.min.js"></script>
+<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+	// Gestion d'erreurs API
+	amplify.request.decoders.myDecoder = function(data, status, xhr, success, error) {
+		if (status == 'success') {
+			success(data, xhr);
+		} else {
+			error(status, xhr);
+		}
+	};
+
+	// Définition des appels API
+	amplify.request.define('get', 'ajax', {
+		url		: '/api/{type}/{id}',
+		dataType	: 'json',
+		type		: 'GET',
+		decoder		: "myDecoder"
+	});
+	amplify.request.define('getAll', 'ajax', {
+		url		: '/api/{type}',
+		dataType	: 'json',
+		type		: 'GET',
+		decoder		: "myDecoder"
+	});
+	amplify.request.define('post', 'ajax', {
+		url		: '/api/{type}',
+		dataType	: 'json',
+		type		: 'POST',
+		decoder         : "myDecoder"
+	});
+	amplify.request.define('put', 'ajax', {
+		url		: '/api/{type}/{id}',
+		dataType	: 'json',
+		type		: 'PUT',
+		decoder         : "myDecoder"
+	});
+	amplify.request.define('delete', 'ajax', {
+		url		: '/api/{type}/{id}',
+		dataType	: 'json',
+		type		: 'DELETE',
+		decoder         : "myDecoder"
+	});
+	amplify.request.define('deleteAll', 'ajax', {
+		url		: '/api/{type}',
+		dataType	: 'json',
+		type		: 'DELETE',
+		decoder         : "myDecoder"
+	});
+
+	// Définition du ractive
+	var mainRactive = new Ractive({
+		el		: "main-content",
+		template	: "#main-template",
+		data		: {
+			newTodo	: '',
+			todos	: []
+		}
+	});
+	var socket = io.connect('http://92.222.218.130:8080');
+	socket.on('pleaseRefresh', function() {
+		amplify.request({
+			resourceID	: 'getAll',
+			data		: {
+				type		: 'todos'
+			},
+			success		: function(data, xhr) {
+				mainRactive.set('todos', data);
+			},
+			error		: function(status, xhr) {
+				console.log(status, xhr);
+			}
+		});
+	});
+
+	// Déclaration des events
+	// Ajout
+	mainRactive.on('add', function(event, id) {
+		amplify.request({
+			resourceId	: 'post',
+			data		: {
+			type		: 'todos',
+			content		: mainRactive.get('newTodo'),
+			success 	: function(data, xhr) {
+				socket.emit('iModifiedIt');
+			},
+			error		: function(status, xhr) {
+				console.log(status, xhr);
+			}
+		});
+	});
+	//Delete d'un todo
+	mainRactive.on('delete', function(event, id) {
+		amplify.request({
+			resourceId	: 'delete',
+			data		: {
+				type	: 'todos',
+				id	: id
+			},
+			success 	: function(data, xhr) {
+				socket.emit('iModifiedIt');
+			},
+			error		: function(status, xhr) {
+				console.log(status, xhr);
+			}
+		});
+	});
+	// RAZ
+	mainRactive.on('deleteAll', function() {
+		amplify.request({
+			resourceId	: 'deleteAll',
+			data		: {
+				type	: 'todos'
+			},
+			success		: function(data, xhr) {
+				socket.emit('iModifiedIt');
+			},
+			error		: function(status, xhr) {
+				console.log(status, xhr);
+			}
+		});
+	});
+</script>
