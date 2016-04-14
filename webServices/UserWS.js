@@ -77,7 +77,7 @@ class UserWS extends WebService {
                 var userId = row[0].id;
                 return require('crypto').randomBytes(48, function(ex, buf) {
                     var token = buf.toString('hex');
-                    query = 'INSERT INTO toValid (userId, token) VALUES (' + userId + ', "' + token + '"';
+                    query = 'INSERT INTO toValid (userId, token) VALUES (' + userId + ', "' + token + '")';
                     return self.mySQL.query(query, function() {
                         // TODO send mail to validate
                         return res.sendStatus(201);
@@ -102,8 +102,8 @@ class UserWS extends WebService {
     verify(req, res) {
         // Passe un user à valide
         var self = this;
-        var email = req.body.email || null;
-        var token = req.body.token || null;
+        var email = req.params.email || null;
+        var token = req.params.token || null;
         if (!email || !token) return res.sendStatus(400);
         var query = 'SELECT id FROM user WHERE email = ' + self.mySQL.escape(email) + ' AND isValid = 0';
         return self.mySQL.query(query, function(row) {

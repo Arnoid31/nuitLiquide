@@ -12,7 +12,7 @@ class ApiV1Routes extends Routes {
         var propositionWS = new PropositionWS();
         super('/api/v1/', [
             {
-                'verb'      : 'post',
+                'verb'      : 'get',
                 'route'     : '/secret',
                 'function'  : function(req, res) {
                     return authenticationWS.secret(req, res);
@@ -27,7 +27,7 @@ class ApiV1Routes extends Routes {
                 'verb'      : 'post',
                 'route'     : '/logout',
                 'function'  : function(req, res) {
-                    return authenticationWS.logout(req, res);
+                    return authenticationWS.checkAuth(req, res, authenticationWS.logout);
                 }
             }, {
                 'verb'      : 'post',
@@ -79,7 +79,7 @@ class ApiV1Routes extends Routes {
                 }
             }, {
                 'verb'      : 'get',
-                'route'     : '/verify',
+                'route'     : '/verify/:email/:token',
                 'function'  : function(req, res) {
                     return userWS.verify(req, res);
                 }
