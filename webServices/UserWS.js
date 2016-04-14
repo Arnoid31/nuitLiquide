@@ -19,9 +19,9 @@ class UserWS extends WebService {
         return self.mySQL.query(selectExpertQuery, function(row) {
             if (row[0].userId == userId) return res.sendStatus(403);
             var query = 'INSERT INTO delegation (userId, expertId, domainId) VALUES (' + userId + ', ' + expertId + ')';
-            return this.mySQL.query(query, function()) {
+            return this.mySQL.query(query, function() {
                 return res.sendStatus(201);
-            };
+            });
         });
     };
 
@@ -31,9 +31,9 @@ class UserWS extends WebService {
         var expertId = parseInt(req.body.expertId) || null;
         if (!expertId) return res.sendStatus(400);
         var query = 'DELETE FROM delegation WHERE userId = ' + userId + ' AND expertId = ' + expertId;
-        return this.mySQL.query(query, function()) {
+        return this.mySQL.query(query, function() {
             return res.sendStatus(201);
-        };
+        });
     };
 
     addExpert(req, res) {

@@ -72,7 +72,7 @@ class AuthenticationWS extends WebService {
         query += 'FROM token AS t ';
         query += 'INNER JOIN user AS u ON u.id = t.userId ';
         query += 'WHERE token = ' + self.mySQL.escape(token) + ' AND DATE_ADD(creationDate, 30 MINUTES) < NOW() AND (expirationDate IS NULL OR expirationDate > NOW() AND isValid = 1';
-        return self.mySQL.query(query, function(row)) {
+        return self.mySQL.query(query, function(row) {
             if (row.length === 0) return res.send(401);
             var password    = row[0].password;
             var email       = row[0].email;
@@ -84,7 +84,7 @@ class AuthenticationWS extends WebService {
             if (sDigest != digest) return res.sendStatus(401);
             req.userId = row[0].userId;
             return cb(req, res);
-        }
+        });
     };
 };
 
