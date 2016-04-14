@@ -2,15 +2,16 @@
 
 var WebService  = require('../libs/WebService');
 var crypto      = require('crypto');
+var Mailer = require('../libs/Mailer');
 
 class UserWS extends WebService {
     constructor() {
         super();
+		this.mailer = new Mailer();
     };
 
     delegate(req, res) {
         // Ajoute ligne dans delegate
-        // TODO empêcher les gens de se déléguer à eux mêmes
         var self = this;
         var userId = req.userId;
         var expertId = parseInt(req.body.expertId) || null;

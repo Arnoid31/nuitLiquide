@@ -43,6 +43,18 @@ class ApiV1Routes extends Routes {
                 }
             }, {
                 'verb'      : 'post',
+                'route'     : '/addExpert',
+                'function'  : function(req, res) {
+                    return authenticationWS.checkAuth(req, res, userWS.addExpert);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/removeExpert',
+                'function'  : function(req, res) {
+                    return authenticationWS.checkAuth(req, res, userWS.removeExpert);
+                }
+            }, {
+                'verb'      : 'post',
                 'route'     : '/create',
                 'function'  : function(req, res) {
                     return userWS.create(req, res);

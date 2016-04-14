@@ -9,10 +9,12 @@
   "license": "GPL-3.0",
   "description": "API de démocratie liquide, développée très rapidement dans le cadre de Nuit Debout",
   "dependencies": {
+    "async": "^2.0.0-rc.3",
     "body-parser": "~1.15.0",
     "crypto": "0.0.3",
     "express": "~4.13.4",
     "mysql": "^2.10.2",
+    "nodemailer": "^2.3.2",
     "path": "~0.12.7"
   }
 }

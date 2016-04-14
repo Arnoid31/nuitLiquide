@@ -9,6 +9,8 @@ class ServerConfig {
             password    : '****',
             database    : '****'
         };
+		this.mStr_SMTPTransport = '****';
+		this.mStr_mailFrom = '****';
     };
 
     getServerPort() {
@@ -16,8 +18,16 @@ class ServerConfig {
     };
 
     getMySQLConfig() {
-        return this.mObj_mySQLConfig
+        return this.mObj_mySQLConfig;
     };
+	
+	getSMTPTransport() {
+		return this.mStr_SMTPTransport;
+	};
+	
+	getMailFrom() {
+		return this.mStr_mailFrom;
+	};
 };
 
 module.exports = ServerConfig;
