@@ -78,6 +78,12 @@ class ApiV1Routes extends Routes {
                     return propositionWS.vote(req, res);
                 }
             }, {
+                'verb'      : 'post',
+                'route'     : '/getProposition',
+                'function'  : function(req, res) {
+                    return propositionWS.get(req, res);
+                }
+            }, {
                 'verb'      : 'get',
                 'route'     : '/verify/:email/:token',
                 'function'  : function(req, res) {

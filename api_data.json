@@ -1,0 +1,506 @@
+[
+  {
+    "type": "post",
+    "url": "/login",
+    "title": "Fait expirer le token de session du user",
+    "name": "login",
+    "group": "Authentication",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/AuthenticationWS.js",
+    "groupTitle": "Authentication"
+  },
+  {
+    "type": "post",
+    "url": "/login",
+    "title": "Attribue le token de session au user",
+    "name": "login",
+    "group": "Authentication",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nonce",
+            "description": "<p>Valeur al�atoire donn�e par le front</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>Email du user</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/AuthenticationWS.js",
+    "groupTitle": "Authentication"
+  },
+  {
+    "type": "get",
+    "url": "/secret",
+    "title": "Retourne un token de session non attribu�",
+    "name": "secret",
+    "group": "Authentication",
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/AuthenticationWS.js",
+    "groupTitle": "Authentication"
+  },
+  {
+    "type": "post",
+    "url": "/add",
+    "title": "Fait expirer le token de session du user",
+    "name": "add",
+    "group": "Proposition",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "label",
+            "description": "<p>Titre de la proposition</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Description de la proposition</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>Id du domaine de la proposition</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "parentId",
+            "description": "<p>(Facultatif, amendements seulement) Id de la proposition � laquelle est rattach�e cet amendement</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/PropositionWS.js",
+    "groupTitle": "Proposition"
+  },
+  {
+    "type": "post",
+    "url": "/getProposition",
+    "title": "Retourne toutes les propositions, amen� � �voluer avec des param�tres optionnels",
+    "name": "getProposition",
+    "group": "Proposition",
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/PropositionWS.js",
+    "groupTitle": "Proposition"
+  },
+  {
+    "type": "post",
+    "url": "/vote",
+    "title": "Fait expirer le token de session du user",
+    "name": "vote",
+    "group": "Proposition",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "vote",
+            "description": "<p>'Y' (yes), 'N' (no) ou 'B' (blanc)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "propositionId",
+            "description": "<p>Id de la proposition</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/PropositionWS.js",
+    "groupTitle": "Proposition"
+  },
+  {
+    "type": "post",
+    "url": "/addExpert",
+    "title": "Rajoute le user aux experts sur un domaine",
+    "name": "addExpert",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>id du domaine de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "skills",
+            "description": "<p>comp�tences/pr�sentation de l'expert (texte libre)</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/create",
+    "title": "Cr�e un user inactif",
+    "name": "create",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>email du compte</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>hash (algo � d�finir c�t� front, doit juste �tre reproductible) du password</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/delegate",
+    "title": "D�l�gue la voix du user pour un expert sur un domaine",
+    "name": "delegate",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>id de l'expert � qui la voix est d�l�gu�e</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/delete",
+    "title": "Supprime le user",
+    "name": "delete",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>hash (algo � d�finir c�t� front, doit juste �tre reproductible) du password</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/removeExpert",
+    "title": "Enl�ve l'expertise au user",
+    "name": "removeExpert",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "/undelegate",
+    "title": "Retire la voix du user pour un expert sur un domaine",
+    "name": "undelegate",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>id de l'expert � qui la voix est d�l�gu�e</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "/verify/:email/:token",
+    "title": "Passe un user � actif",
+    "name": "verify",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token d'activation (normalement envoy� par mail, pas d�v pour le moment)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>email du user</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  }
+]

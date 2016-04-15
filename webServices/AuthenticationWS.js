@@ -8,6 +8,11 @@ class AuthenticationWS extends WebService {
         super();
     };
 
+    /**
+     * @api {get} /secret Retourne un token de session non attribué
+     * @apiName secret
+     * @apiGroup Authentication
+    */
     secret(req, res) {
         // Crée le token, renvoie secret
         var self = this;
@@ -22,10 +27,20 @@ class AuthenticationWS extends WebService {
         });
     };
 
+    /**
+     * @api {post} /login Attribue le token de session au user
+     * @apiName login
+     * @apiGroup Authentication
+     *
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} nonce Valeur aléatoire donnée par le front
+     * @apiParam {String} date Date utilisée pour la génération du digest
+     * @apiParam {String} email Email du user
+    */
     login(req, res) {
         // Vérifie hash, ajoute nonce dans token
         var self = this;
-        console.log(req.body);
         var email   = req.body.email    || null;
         var token   = req.body.token    || null;
         var nonce   = req.body.nonce    || null;
@@ -55,6 +70,15 @@ class AuthenticationWS extends WebService {
         });
     };
 
+    /**
+     * @api {post} /login Fait expirer le token de session du user
+     * @apiName login
+     * @apiGroup Authentication
+     *
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} date Date utilisée pour la génération du digest
+    */
     logout(req, res) {
         // Fait expirer l'ensemble des tokens actifs pour le user
         var self = this;
@@ -64,33 +88,6 @@ class AuthenticationWS extends WebService {
             return self.mySQL.query(query, function() {
                 return res.sendStatus(200);
             });
-        });
-    };
-
-    checkAuth(req, res, cb) {
-        // Ajoute userId dans req si trouvé à partir de token
-        var self = this;
-        var token   = req.body.token    || null;
-        var digest  = req.body.digest   || null;
-        var date    = req.body.date     || null;
-        if (!token || !digest || !date) return res.sendStatus(400);
-        var query = 'SELECT userId, email, password, nonce ';
-        query += 'FROM token AS t ';
-        query += 'INNER JOIN user AS u ON u.id = t.userId ';
-        query += 'WHERE token = ' + self.mySQL.escape(token) + ' AND TIMESTAMPDIFF(MINUTE,t.creationDate,NOW()) < 30 AND (expirationDate IS NULL OR expirationDate > NOW()) AND isValid = 1';
-        return self.mySQL.query(query, function(row) {
-            if (row.length === 0) return res.send(401);
-            var password    = row[0].password;
-            var email       = row[0].email;
-            var nonce       = row[0].nonce;
-            var sDigest = crypto.createHmac('sha1', password).update(email).digest('hex');
-            // XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
-            // sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
-            sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
-            sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
-            if (sDigest != digest) return res.sendStatus(401);
-            req.userId = row[0].userId;
-            return cb(req, res);
         });
     };
 };

@@ -8,23 +8,48 @@ class PropositionWS extends WebService {
         super();
     };
 
+    /**
+     * @api {post} /add Fait expirer le token de session du user
+     * @apiName add
+     * @apiGroup Proposition
+     *
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} date Date utilisée pour la génération du digest
+     * @apiParam {String} label Titre de la proposition
+     * @apiParam {String} description Description de la proposition
+     * @apiParam {Number} domainId Id du domaine de la proposition
+     * @apiParam {Number} parentId (Facultatif, amendements seulement) Id de la proposition à laquelle est rattachée cet amendement
+    */
     add(req, res) {
         // Ajoute une proposition
         var self = this;
         return self._checkAuth(req, res, function(req, res) {
+            var userId = req.userId;
             var label = req.body.label || null;
             var description = req.body.label || null;
             var domainId = parseInt(req.body.domainId) || null;
             var parentId = parseInt(req.body.parentId) || null;
             if (!label || !description || !domainId) return res.sendStatus(400);
-            var query = 'INSERT INTO proposition (label, description, domainId' + ((!parentId) ? '' : ', parentId') +') ';
-            query += 'VALUES (' + self.mySQL.escape(label) + ', ' + self.mySQL.escape(description) + ', ' + domainId + ((!parentId) ? '' : ', ' + parentId) + ')';
+            var query = 'INSERT INTO proposition (label, description, userId, domainId' + ((!parentId) ? '' : ', parentId') +') ';
+            query += 'VALUES (' + self.mySQL.escape(label) + ', ' + self.mySQL.escape(description) + ', ' + userId + ', ' + domainId + ((!parentId) ? '' : ', ' + parentId) + ')';
             return self.mySQL.query(query, function() {
                 return res.sendStatus(201);
             });
         });
     };
 
+    /**
+     * @api {post} /vote Fait expirer le token de session du user
+     * @apiName vote
+     * @apiGroup Proposition
+     *
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} date Date utilisée pour la génération du digest
+     * @apiParam {String} vote 'Y' (yes), 'N' (no) ou 'B' (blanc)
+     * @apiParam {Number} propositionId Id de la proposition
+    */
     vote(req, res) {
         // Vote (positif ou négatif) pour une proposition
         var self = this;
@@ -49,7 +74,7 @@ class PropositionWS extends WebService {
                         async.each(rows, function(row, callback) {
                             var id = row.id;
                             query = 'INSERT IGNORE INTO vote (userId, propositionId, vote) VALUES ('+ id +', ' + propositionId + ', ' + self.mySQL.escape(vote) + ')';
-                            self.mySQL.query(query, callback);
+                            return self.mySQL.query(query, callback);
                         }, function() {
                             return res.sendStatus(201);
                         });
@@ -59,8 +84,18 @@ class PropositionWS extends WebService {
         });
     };
 
+    /**
+     * @api {post} /getProposition Retourne toutes les propositions, amené à évoluer avec des paramètres optionnels
+     * @apiName getProposition
+     * @apiGroup Proposition
+    */
     get(req, res) {
         // Retourne une ou des propositions
+        var self = this;
+        var query = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition';
+        return self.mySQL.query(query, function(rows) {
+            return res.json(rows);
+        });
     };
 };
 
