@@ -27,31 +27,31 @@ class ApiV1Routes extends Routes {
                 'verb'      : 'post',
                 'route'     : '/logout',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, authenticationWS.logout);
+                    return authenticationWS.logout(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/delegate',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, userWS.delegate);
+                    return userWS.delegate(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/undelegate',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, userWS.undelegate);
+                    return userWS.undelegate(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/addExpert',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, userWS.addExpert);
+                    return userWS.addExpert(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/removeExpert',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, userWS.removeExpert);
+                    return userWS.removeExpert(req, res);
                 }
             }, {
                 'verb'      : 'post',
@@ -63,19 +63,19 @@ class ApiV1Routes extends Routes {
                 'verb'      : 'post',
                 'route'     : '/delete',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, userWS.delete);
+                    return userWS.delete(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/propose',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, propositionWS.add);
+                    return propositionWS.add(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/vote',
                 'function'  : function(req, res) {
-                    return authenticationWS.checkAuth(req, res, propositionWS.vote);
+                    return propositionWS.vote(req, res);
                 }
             }, {
                 'verb'      : 'get',

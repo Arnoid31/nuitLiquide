@@ -1,7 +1,7 @@
 'use strict';
 
 var WebService  = require('../libs/WebService');
-var crypto      = require('crypto');
+var crypto          = require('crypto');
 
 class AuthenticationWS extends WebService {
     constructor() {
@@ -25,6 +25,7 @@ class AuthenticationWS extends WebService {
     login(req, res) {
         // Vérifie hash, ajoute nonce dans token
         var self = this;
+        console.log(req.body);
         var email   = req.body.email    || null;
         var token   = req.body.token    || null;
         var nonce   = req.body.nonce    || null;
@@ -40,11 +41,11 @@ class AuthenticationWS extends WebService {
             return self.mySQL.query(query, function(row) {
                 if (row.length === 0) return res.sendStatus(401);
                 var sDigest = crypto.createHmac('sha1', password).update(email).digest('hex');
-				// XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
+                // XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
                 // sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
-				console.log(sDigest);
+                console.log(sDigest);
                 if (sDigest != digest) return res.sendStatus(401);
                 query = 'UPDATE token SET nonce = ' + self.mySQL.escape(nonce) + ', userId = ' + userId + ', expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE token = ' + self.mySQL.escape(token);
                 return self.mySQL.query(query, function() {
@@ -56,11 +57,13 @@ class AuthenticationWS extends WebService {
 
     logout(req, res) {
         // Fait expirer l'ensemble des tokens actifs pour le user
-		var self = this;
-        var userId = req.userId;
-        var query = 'UPDATE token SET expirationDate = NOW() WHERE userId = ' + userId + ' AND expirationDate > NOW()';
-        return self.mySQL.query(query, function() {
-            return res.sendStatus(200);
+        var self = this;
+        return self._checkAuth(req, res, function() {
+            var userId = req.userId;
+            var query = 'UPDATE token SET expirationDate = NOW() WHERE userId = ' + userId + ' AND expirationDate > NOW()';
+            return self.mySQL.query(query, function() {
+                return res.sendStatus(200);
+            });
         });
     };
 
@@ -81,7 +84,7 @@ class AuthenticationWS extends WebService {
             var email       = row[0].email;
             var nonce       = row[0].nonce;
             var sDigest = crypto.createHmac('sha1', password).update(email).digest('hex');
-			// XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
+            // XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
             // sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
             sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
             sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
