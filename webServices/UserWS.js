@@ -36,8 +36,9 @@ class UserWS extends WebService {
                 return require('crypto').randomBytes(48, function(ex, buf) {
                     var token = buf.toString('hex');
                     query = 'INSERT INTO toValid (userId, token) VALUES (' + userId + ', "' + token + '")';
-                    return self.mySQL.query(query, function() {
+                    return self.mySQL.query(query, function(err) {
                         // TODO send mail to validate
+                        if (err) return res.sendStatus(500);
                         return res.sendStatus(201);
                     });
                 });
@@ -63,7 +64,8 @@ class UserWS extends WebService {
             var password = req.body.password || null;
             if (!password) return res.sendStatus(400);
             var query = 'DELETE FROM user WHERE id = ' + userId + ' AND password = ' + self.mySQL.escape(password);
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+                if (err) return res.sendStatus(500);
                 return res.sendStatus(204);
             });
         });
@@ -84,11 +86,13 @@ class UserWS extends WebService {
         var token = req.params.token || null;
         if (!email || !token) return res.sendStatus(400);
         var query = 'SELECT id FROM user WHERE email = ' + self.mySQL.escape(email) + ' AND isValid = 0';
-        return self.mySQL.query(query, function(row) {
+        return self.mySQL.query(query, function(err, row) {
+            if (err) res.sendStatus(500);
             if (row.length === 0) return res.sendStatus(404);
             var userId = row[0].id;
             query = 'UPDATE user SET isValid = 1 WHERE id = ' + userId;
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+                if (err) res.sendStatus(500);
                 query = 'DELETE FROM toValid WHERE userId = ' + userId;
                 return self.mySQL.query(query, function() {
                     return res.sendStatus(200);

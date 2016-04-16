@@ -25,7 +25,7 @@ class WebService {
             if (opt == true) return cb(req, res);
             return res.sendStatus(400);
         }
-        var query = 'SELECT t.id AS id, userId, email, password, nonce, ';
+        var query = 'SELECT token, userId, email, password, nonce ';
         query += 'FROM token AS t ';
         query += 'INNER JOIN user AS u ON u.id = t.userId ';
         query += 'WHERE token = ' + self.mySQL.escape(token) + ' AND TIMESTAMPDIFF(MINUTE,t.creationDate,NOW()) < 30 AND (expirationDate IS NULL OR expirationDate > NOW()) AND isValid = 1';
@@ -46,7 +46,7 @@ class WebService {
                 if (opt == true) return cb(req, res);
                 return res.sendStatus(401);
             }
-            var updateTokenQuery = 'UPDATE token SET expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE id = ' + row[0].id;
+            var updateTokenQuery = 'UPDATE token SET expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE token = ' + self.mySQL.escape(row[0].token);
             req.userId = row[0].userId;
             return self.mySQL.query(updateTokenQuery, function(err) {
                 if (err) return res.sendStatus(500);

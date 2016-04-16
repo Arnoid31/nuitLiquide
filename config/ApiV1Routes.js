@@ -2,14 +2,20 @@
 
 var Routes              = require('./../libs/Routes');
 var AuthenticationWS    = require('./../webServices/AuthenticationWS');
-var UserWS              = require('./../webServices/UserWS');
+var DelegationWS        = require('./../webServices/DelegationWS');
+var DomainWS            = require('./../webServices/DomainWS');
+var ExpertWS            = require('./../webServices/ExpertWS');
 var PropositionWS       = require('./../webServices/PropositionWS');
+var UserWS              = require('./../webServices/UserWS');
 
 class ApiV1Routes extends Routes {
     constructor() {
-        var authenticationWS = new AuthenticationWS();
-        var userWS = new UserWS();
-        var propositionWS = new PropositionWS();
+        var authenticationWS    = new AuthenticationWS();
+        var delegationWS        = new DelegationWS();
+        var domainWS            = new DomainWS();
+        var expertWS            = new ExpertWS();
+        var propositionWS       = new PropositionWS();
+        var userWS              = new UserWS();
         super('/api/v1/', [
             {
                 'verb'      : 'get',
@@ -42,7 +48,7 @@ class ApiV1Routes extends Routes {
                     return delegationWS.undelegate(req, res);
                 }
             }, {
-                'verb'      : 'post',
+                'verb'      : 'get',
                 'route'     : '/domain/get',
                 'function'  : function(req, res) {
                     return domainWS.get(req, res);
@@ -51,16 +57,16 @@ class ApiV1Routes extends Routes {
                 'verb'      : 'post',
                 'route'     : '/expert/create',
                 'function'  : function(req, res) {
-                    return expertWS.addExpert(req, res);
+                    return expertWS.create(req, res);
                 }
             }, {
                 'verb'      : 'post',
                 'route'     : '/expert/delete',
                 'function'  : function(req, res) {
-                    return expertWS.removeExpert(req, res);
+                    return expertWS.delete(req, res);
                 }
             }, {
-                'verb'      : 'post',
+                'verb'      : 'get',
                 'route'     : '/expert/get',
                 'function'  : function(req, res) {
                     return expertWS.get(req, res);
@@ -96,7 +102,7 @@ class ApiV1Routes extends Routes {
                     return propositionWS.vote(req, res);
                 }
             }, {
-                'verb'      : 'post',
+                'verb'      : 'get',
                 'route'     : '/proposition/get',
                 'function'  : function(req, res) {
                     return propositionWS.get(req, res);
