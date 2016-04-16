@@ -18,7 +18,7 @@ class ApiV1Routes extends Routes {
         var userWS              = new UserWS();
         super('/api/v1/', [
             {
-                'verb'      : 'get',
+                'verb'      : 'post',
                 'route'     : '/authentication/secret',
                 'function'  : function(req, res) {
                     return authenticationWS.secret(req, res);
@@ -45,10 +45,10 @@ class ApiV1Routes extends Routes {
                 'verb'      : 'post',
                 'route'     : '/delegation/delete',
                 'function'  : function(req, res) {
-                    return delegationWS.undelegate(req, res);
+                    return delegationWS.delete(req, res);
                 }
             }, {
-                'verb'      : 'get',
+                'verb'      : 'post',
                 'route'     : '/domain/get',
                 'function'  : function(req, res) {
                     return domainWS.get(req, res);
@@ -66,7 +66,7 @@ class ApiV1Routes extends Routes {
                     return expertWS.delete(req, res);
                 }
             }, {
-                'verb'      : 'get',
+                'verb'      : 'post',
                 'route'     : '/expert/get',
                 'function'  : function(req, res) {
                     return expertWS.get(req, res);
@@ -84,7 +84,7 @@ class ApiV1Routes extends Routes {
                     return userWS.delete(req, res);
                 }
             }, {
-                'verb'      : 'get',
+                'verb'      : 'post',
                 'route'     : '/user/verify/:email/:token',
                 'function'  : function(req, res) {
                     return userWS.verify(req, res);
@@ -102,7 +102,7 @@ class ApiV1Routes extends Routes {
                     return propositionWS.vote(req, res);
                 }
             }, {
-                'verb'      : 'get',
+                'verb'      : 'post',
                 'route'     : '/proposition/get',
                 'function'  : function(req, res) {
                     return propositionWS.get(req, res);

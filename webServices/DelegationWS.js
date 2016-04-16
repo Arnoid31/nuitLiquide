@@ -27,8 +27,8 @@ class DelegationWS extends WebService {
             return self.mySQL.query(selectExpertQuery, function(err, row) {
                 if (err) return res.sendStatus(500);
                 if (row[0].userId == userId) return res.sendStatus(403);
-                var query = 'INSERT INTO delegation (userId, expertId, domainId) VALUES (' + userId + ', ' + expertId + ')';
-                return this.mySQL.query(query, function(err) {
+                var query = 'INSERT INTO delegation (userId, expertId) VALUES (' + userId + ', ' + expertId + ')';
+                return self.mySQL.query(query, function(err) {
                     if (err) return res.sendStatus(500);
                     return res.sendStatus(201);
                 });
@@ -53,7 +53,7 @@ class DelegationWS extends WebService {
             var expertId = parseInt(req.body.expertId) || null;
             if (!expertId) return res.sendStatus(400);
             var query = 'DELETE FROM delegation WHERE userId = ' + userId + ' AND expertId = ' + expertId;
-            return this.mySQL.query(query, function(err) {
+            return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
                 return res.sendStatus(201);
             });

@@ -50,8 +50,7 @@ class ExpertWS extends WebService {
     delete(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(authReq) {
-            var idUser = authReq.idUser;
-            if (!domainId) return res.sendStatus(400);
+            var userId = authReq.userId;
             var query = 'DELETE FROM expert WHERE userId = ' + userId;
             return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
@@ -62,10 +61,12 @@ class ExpertWS extends WebService {
 
     get(req, res) {
         var self = this;
-        var selectExpertQuery = 'SELECT id, userId, domainId, skills, creationDate FROM expert';
-        return self.mySQL.query(selectExpertQuery, function(err, rows) {
-            if (err) return res.sendStatus(500);
-            return res.json(rows);
+        return self._checkAuthOpt(req, res, function(authReq) {
+            var selectExpertQuery = 'SELECT id, userId, domainId, skills, creationDate FROM expert';
+            return self.mySQL.query(selectExpertQuery, function(err, rows) {
+                if (err) return res.sendStatus(500);
+                return res.json(rows);
+            });
         });
     };
 }

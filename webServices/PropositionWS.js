@@ -27,7 +27,7 @@ class PropositionWS extends WebService {
         return self._checkAuth(req, res, function(authReq) {
             var userId = authReq.userId;
             var label = authReq.body.label || null;
-            var description = authReq.body.label || null;
+            var description = authReq.body.description || null;
             var domainId = parseInt(authReq.body.domainId) || null;
             var parentId = parseInt(authReq.body.parentId) || null;
             if (!label || !description || !domainId) return res.sendStatus(400);
@@ -59,23 +59,27 @@ class PropositionWS extends WebService {
             var propositionId = parseInt(req.body.propositionId) || null;
             if (!vote || !propositionId) return res.sendStatus(400);
             var query = 'REPLACE INTO vote (userId, propositionId, vote) VALUES ('+ userId +', ' + propositionId + ', ' + self.mySQL.escape(vote) + ')';
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+                if (err) res.sendStatus(500);
                 query = 'SELECT 1 ';
                 query += 'FROM expert AS e ';
-                query += 'INNER JOIN proposition AS p ON p.domainId = e.domainId AND p.id = ' + propositionId;
+                query += 'INNER JOIN proposition AS p ON p.domainId = e.domainId AND p.id = ' + propositionId+ ' ';
                 query += 'WHERE e.userId = ' + userId;
-                return self.mySQL.query(query, function(rows) {
+                return self.mySQL.query(query, function(err, rows) {
+                    if (err) res.sendStatus(500);
                     if (rows.length === 0) return res.sendStatus(201);
                     query = 'SELECT d.userId AS id ';
                     query += 'FROM expert AS e ';
                     query += 'INNER JOIN delegation AS d ';
                     query += 'WHERE e.userId = ' + userId;
-                    return self.mySQL.query(query, function(rows) {
-                        async.each(rows, function(row, callback) {
+                    return self.mySQL.query(query, function(err, rows) {
+                        if (err) res.sendStatus(500);
+                        return async.each(rows, function(row, callback) {
                             var id = row.id;
                             query = 'INSERT IGNORE INTO vote (userId, propositionId, vote) VALUES ('+ id +', ' + propositionId + ', ' + self.mySQL.escape(vote) + ')';
                             return self.mySQL.query(query, callback);
-                        }, function() {
+                        }, function(err) {
+                            if(err) return res.sendStatus(500);
                             return res.sendStatus(201);
                         });
                     });
@@ -92,9 +96,12 @@ class PropositionWS extends WebService {
     get(req, res) {
         // Retourne une ou des propositions
         var self = this;
-        var query = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition';
-        return self.mySQL.query(query, function(rows) {
-            return res.json(rows);
+        self._checkAuthOpt(req, res, function(authReq) {
+            var query = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition';
+            return self.mySQL.query(query, function(err, rows) {
+                if (err) return res.sendStatus(500);
+                return res.json(rows);
+            });
         });
     };
 };
