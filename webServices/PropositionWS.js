@@ -9,8 +9,8 @@ class PropositionWS extends WebService {
     };
 
     /**
-     * @api {post} /add Fait expirer le token de session du user
-     * @apiName add
+     * @api {post} proposition/create Fait expirer le token de session du user
+     * @apiName Createproposition
      * @apiGroup Proposition
      *
      * @apiParam {String} token Token de la session en cours (donné par secret)
@@ -21,15 +21,15 @@ class PropositionWS extends WebService {
      * @apiParam {Number} domainId Id du domaine de la proposition
      * @apiParam {Number} parentId (Facultatif, amendements seulement) Id de la proposition à laquelle est rattachée cet amendement
     */
-    add(req, res) {
+    create(req, res) {
         // Ajoute une proposition
         var self = this;
-        return self._checkAuth(req, res, function(req, res) {
-            var userId = req.userId;
-            var label = req.body.label || null;
-            var description = req.body.label || null;
-            var domainId = parseInt(req.body.domainId) || null;
-            var parentId = parseInt(req.body.parentId) || null;
+        return self._checkAuth(req, res, function(authReq) {
+            var userId = authReq.userId;
+            var label = authReq.body.label || null;
+            var description = authReq.body.label || null;
+            var domainId = parseInt(authReq.body.domainId) || null;
+            var parentId = parseInt(authReq.body.parentId) || null;
             if (!label || !description || !domainId) return res.sendStatus(400);
             var query = 'INSERT INTO proposition (label, description, userId, domainId' + ((!parentId) ? '' : ', parentId') +') ';
             query += 'VALUES (' + self.mySQL.escape(label) + ', ' + self.mySQL.escape(description) + ', ' + userId + ', ' + domainId + ((!parentId) ? '' : ', ' + parentId) + ')';

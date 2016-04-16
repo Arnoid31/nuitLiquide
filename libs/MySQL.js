@@ -14,8 +14,7 @@ class MySQL {
     query(str_query, func_callback) {
         console.log(str_query);
         this.connection.query(str_query, function(err, rows, fields) {
-            if (err) throw err;
-            return func_callback(rows, fields);
+            return func_callback(err, rows, fields);
         });
     };
 

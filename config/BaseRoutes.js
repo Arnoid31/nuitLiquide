@@ -2,9 +2,7 @@
 
 var Routes = require( './../libs/Routes');
 
-export default class BaseRoutes extends Routes {
-    var self = this;
-
+class BaseRoutes extends Routes {
     constructor() {
         super('/', [
             {
@@ -17,3 +15,5 @@ export default class BaseRoutes extends Routes {
         ]);
     };
 };
+
+module.exports = BaseRoutes;

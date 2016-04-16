@@ -1,46 +1,9 @@
-[
+define({ "api": [
   {
     "type": "post",
-    "url": "/login",
-    "title": "Fait expirer le token de session du user",
-    "name": "login",
-    "group": "Authentication",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Token de la session en cours (donn� par secret)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "digest",
-            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "date",
-            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "nuitLiquide/webServices/AuthenticationWS.js",
-    "groupTitle": "Authentication"
-  },
-  {
-    "type": "post",
-    "url": "/login",
+    "url": "authentication/login",
     "title": "Attribue le token de session au user",
-    "name": "login",
+    "name": "Login",
     "group": "Authentication",
     "parameter": {
       "fields": {
@@ -88,10 +51,47 @@
     "groupTitle": "Authentication"
   },
   {
+    "type": "post",
+    "url": "authentication/logout",
+    "title": "Fait expirer le token de session du user",
+    "name": "Logout",
+    "group": "Authentication",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/AuthenticationWS.js",
+    "groupTitle": "Authentication"
+  },
+  {
     "type": "get",
-    "url": "/secret",
+    "url": "authentication/secret",
     "title": "Retourne un token de session non attribu�",
-    "name": "secret",
+    "name": "Secret",
     "group": "Authentication",
     "version": "0.0.0",
     "filename": "nuitLiquide/webServices/AuthenticationWS.js",
@@ -99,9 +99,195 @@
   },
   {
     "type": "post",
-    "url": "/add",
+    "url": "delegation/create",
+    "title": "Attribue la voix du user � l'expert donn�",
+    "name": "Createdelegation",
+    "group": "Delegation",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>Id de l'expert � qui donner la voix</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/DelegationWS.js",
+    "groupTitle": "Delegation"
+  },
+  {
+    "type": "post",
+    "url": "/delegation/delete",
+    "title": "Retire la voix du user pour un expert sur un domaine",
+    "name": "Deletedelegation",
+    "group": "Delegation",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>Id de l'expert � qui retirer la voix du user</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/DelegationWS.js",
+    "groupTitle": "Delegation"
+  },
+  {
+    "type": "get",
+    "url": "domain/get",
+    "title": "Retourne la liste des domaines",
+    "name": "Getdomain",
+    "group": "Domain",
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/DomainWS.js",
+    "groupTitle": "Domain"
+  },
+  {
+    "type": "post",
+    "url": "expert/create",
+    "title": "Rajoute le user aux experts sur un domaine",
+    "name": "CreateExpert",
+    "group": "Expert",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donné par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilisée pour la génération du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>id du domaine de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "skills",
+            "description": "<p>compétences/présentation de l'expert (texte libre)</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/ExpertWS.js",
+    "groupTitle": "Expert"
+  },
+  {
+    "type": "post",
+    "url": "expert/delete",
+    "title": "Enlève l'expertise au user",
+    "name": "Deleteexpert",
+    "group": "Expert",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donné par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilisée pour la génération du digest</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/ExpertWS.js",
+    "groupTitle": "Expert"
+  },
+  {
+    "type": "post",
+    "url": "proposition/create",
     "title": "Fait expirer le token de session du user",
-    "name": "add",
+    "name": "Createproposition",
     "group": "Proposition",
     "parameter": {
       "fields": {
@@ -225,60 +411,9 @@
   },
   {
     "type": "post",
-    "url": "/addExpert",
-    "title": "Rajoute le user aux experts sur un domaine",
-    "name": "addExpert",
-    "group": "User",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Token de la session en cours (donn� par secret)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "digest",
-            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "date",
-            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "domainId",
-            "description": "<p>id du domaine de l'expert</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "skills",
-            "description": "<p>comp�tences/pr�sentation de l'expert (texte libre)</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "nuitLiquide/webServices/UserWS.js",
-    "groupTitle": "User"
-  },
-  {
-    "type": "post",
-    "url": "/create",
+    "url": "user/create",
     "title": "Cr�e un user inactif",
-    "name": "create",
+    "name": "Createuser",
     "group": "User",
     "parameter": {
       "fields": {
@@ -306,53 +441,9 @@
   },
   {
     "type": "post",
-    "url": "/delegate",
-    "title": "D�l�gue la voix du user pour un expert sur un domaine",
-    "name": "delegate",
-    "group": "User",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Token de la session en cours (donn� par secret)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "digest",
-            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "date",
-            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "expertId",
-            "description": "<p>id de l'expert � qui la voix est d�l�gu�e</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "nuitLiquide/webServices/UserWS.js",
-    "groupTitle": "User"
-  },
-  {
-    "type": "post",
-    "url": "/delete",
+    "url": "user/delete",
     "title": "Supprime le user",
-    "name": "delete",
+    "name": "Deleteuser",
     "group": "User",
     "parameter": {
       "fields": {
@@ -393,91 +484,10 @@
     "groupTitle": "User"
   },
   {
-    "type": "post",
-    "url": "/removeExpert",
-    "title": "Enl�ve l'expertise au user",
-    "name": "removeExpert",
-    "group": "User",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Token de la session en cours (donn� par secret)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "digest",
-            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "date",
-            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "nuitLiquide/webServices/UserWS.js",
-    "groupTitle": "User"
-  },
-  {
-    "type": "post",
-    "url": "/undelegate",
-    "title": "Retire la voix du user pour un expert sur un domaine",
-    "name": "undelegate",
-    "group": "User",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "token",
-            "description": "<p>Token de la session en cours (donn� par secret)</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "digest",
-            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "date",
-            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "optional": false,
-            "field": "expertId",
-            "description": "<p>id de l'expert � qui la voix est d�l�gu�e</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.0.0",
-    "filename": "nuitLiquide/webServices/UserWS.js",
-    "groupTitle": "User"
-  },
-  {
     "type": "get",
-    "url": "/verify/:email/:token",
+    "url": "user/verify/:email/:token",
     "title": "Passe un user � actif",
-    "name": "verify",
+    "name": "Verifyuser",
     "group": "User",
     "parameter": {
       "fields": {
@@ -503,4 +513,4 @@
     "filename": "nuitLiquide/webServices/UserWS.js",
     "groupTitle": "User"
   }
-]
+] });

@@ -13,81 +13,93 @@ class ApiV1Routes extends Routes {
         super('/api/v1/', [
             {
                 'verb'      : 'get',
-                'route'     : '/secret',
+                'route'     : '/authentication/secret',
                 'function'  : function(req, res) {
                     return authenticationWS.secret(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/login',
+                'route'     : '/authentication/login',
                 'function'  : function(req, res) {
                     return authenticationWS.login(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/logout',
+                'route'     : '/authentication/logout',
                 'function'  : function(req, res) {
                     return authenticationWS.logout(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/delegate',
+                'route'     : '/delegation/create',
                 'function'  : function(req, res) {
-                    return userWS.delegate(req, res);
+                    return delegationWS.create(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/undelegate',
+                'route'     : '/delegation/delete',
                 'function'  : function(req, res) {
-                    return userWS.undelegate(req, res);
+                    return delegationWS.undelegate(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/addExpert',
+                'route'     : '/domain/get',
                 'function'  : function(req, res) {
-                    return userWS.addExpert(req, res);
+                    return domainWS.get(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/removeExpert',
+                'route'     : '/expert/create',
                 'function'  : function(req, res) {
-                    return userWS.removeExpert(req, res);
+                    return expertWS.addExpert(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/create',
+                'route'     : '/expert/delete',
+                'function'  : function(req, res) {
+                    return expertWS.removeExpert(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/expert/get',
+                'function'  : function(req, res) {
+                    return expertWS.get(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/user/create',
                 'function'  : function(req, res) {
                     return userWS.create(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/delete',
+                'route'     : '/user/delete',
                 'function'  : function(req, res) {
                     return userWS.delete(req, res);
                 }
             }, {
-                'verb'      : 'post',
-                'route'     : '/propose',
+                'verb'      : 'get',
+                'route'     : '/user/verify/:email/:token',
                 'function'  : function(req, res) {
-                    return propositionWS.add(req, res);
+                    return userWS.verify(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/vote',
+                'route'     : '/proposition/create',
+                'function'  : function(req, res) {
+                    return propositionWS.create(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/proposition/vote',
                 'function'  : function(req, res) {
                     return propositionWS.vote(req, res);
                 }
             }, {
                 'verb'      : 'post',
-                'route'     : '/getProposition',
+                'route'     : '/proposition/get',
                 'function'  : function(req, res) {
                     return propositionWS.get(req, res);
-                }
-            }, {
-                'verb'      : 'get',
-                'route'     : '/verify/:email/:token',
-                'function'  : function(req, res) {
-                    return userWS.verify(req, res);
                 }
             }
         ]);

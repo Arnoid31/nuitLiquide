@@ -1,165 +1,253 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<title>Ma Todolist</title>
-		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-	</head>
+    <head>
+        <title>Nuit Liquide</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+    </head>
 
-	<body>
-		<div id="main-content"></div>
-	</body>
+    <body>
+        <div id="main-content"></div>
+    </body>
 </html>
 
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <script type="x-template" id="main-template">
-	<h1>Ma Todolist</h1>
-	<table>
-		<th>ID</th>
-		<th>Content</th>
-		{{#todos}}
-			<tr>
-				<td>{{id}}</td>
-				<td>{{content}}</td>
-				<td>
-					<button on-click="delete:{{id}}">x</button>
-				</td>
-			</tr>
-		{{/todo}}
-		<tr>
-			<td>&nbsp;</td>
-			<td>
-				<input type="text" value="{{newTodo}}"/>
-			</td>
-			<td>
-				<button on-click="add">Add</button>
-			</td>
-		</tr>
-	</table>
-	<button on-click="deleteAll">Reset !</button>
+    <h1>Propositions</h1>
+    <button on-click="login">Login</button>
+    <button on-click="logout">Logout</button>
+    <label for="email">Email</label>
+    <input id="email" type="text" value="{{email}}"/>
+    <label for="password">Password</label>
+    <input id="password" type="text" value="{{password}}"/>
+    <button on-click="create">Create</button>
+    <label for="token">Token</label>
+    <input id="token" type="text" value="{{token}}"/>
+    <button on-click="verify">Verify</button>
+    <table>
+        <th>Id</th>
+        <th>Label</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>DomainId</th>
+        <th>ParentId</th>
+        <th>&nbsp;</th>
+        {{#propositions}}
+            <tr>
+                <td>{{id}}</td>
+                <td>{{label}}</td>
+                <td>{{description}}</td>
+                <td>{{creationDate}}</td>
+                <td>{{domainId}}</td>
+                <td>{{parentId}}</td>
+                <td>
+                    <button on-click="delete:{{id}}">x</button>
+                    <button on-click="vote:{{id}},1">+</button>
+                    <button on-click="vote:{{id}},2">-</button>
+                    <button on-click="vote:{{id}},3">0</button>
+                </td>
+            </tr>
+        {{/propositions}}
+        <tr>
+            <td>&nbsp;</td>
+            <td>
+                <input type="text" value="{{newLabel}}"/>
+            </td>
+            <td>
+                <input type="text" value="{{newDescription}}"/>
+            </td>
+            <td>
+                <input type="text" value="{{newDomainId}}"/>
+            </td>
+            <td>
+                <input type="text" value="{{newParentId}}"/>
+            </td>
+            <td>
+                <button on-click="add">Add</button>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
 </script>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 <script src="//cdn.ractivejs.org/latest/ractive.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/amplifyjs/1.1.0/amplify.min.js"></script>
-<script src="//cdn.socket.io/socket.io-1.4.5.js"></script>
+<script type="text/javascript" src="http://crypto-js.googlecode.com/files/2.0.0-crypto-sha1.js"></script>
+<script type="text/javascript" src="http://crypto-js.googlecode.com/files/2.0.0-hmac-min.js"></script>
 <script>
-	// Gestion d'erreurs API
-	amplify.request.decoders.myDecoder = function(data, status, xhr, success, error) {
-		if (status == 'success') {
-			success(data, xhr);
-		} else {
-			error(status, xhr);
-		}
-	};
+    // Gestion d'erreurs API
+    amplify.request.decoders.myDecoder = function(data, status, xhr, success, error) {
+        if (status == 'success') {
+            success(data, xhr);
+        } else {
+            error(status, xhr);
+        }
+    };
 
-	// Définition des appels API
-	amplify.request.define('get', 'ajax', {
-		url		: '/api/{type}/{id}',
-		dataType	: 'json',
-		type		: 'GET',
-		decoder		: "myDecoder"
-	});
-	amplify.request.define('getAll', 'ajax', {
-		url		: '/api/{type}',
-		dataType	: 'json',
-		type		: 'GET',
-		decoder		: "myDecoder"
-	});
-	amplify.request.define('post', 'ajax', {
-		url		: '/api/{type}',
-		type		: 'POST',
-		decoder         : "myDecoder"
-	});
-	amplify.request.define('put', 'ajax', {
-		url		: '/api/{type}/{id}',
-		type		: 'PUT',
-		decoder         : "myDecoder"
-	});
-	amplify.request.define('delete', 'ajax', {
-		url		: '/api/{type}/{id}',
-		type		: 'DELETE',
-		decoder         : "myDecoder"
-	});
-	amplify.request.define('deleteAll', 'ajax', {
-		url		: '/api/{type}',
-		type		: 'DELETE',
-		decoder         : "myDecoder"
-	});
+    // Définition des appels API
+    amplify.request.define('login', 'ajax', {
+        url     : '/api/v1/login',
+        dataType    : 'json',
+        type        : 'POST',
+        decoder     : "myDecoder"
+    });
+    amplify.request.define('logout', 'ajax', {
+        url     : '/api/v1/logout',
+        dataType    : 'json',
+        type        : 'POST',
+        decoder     : "myDecoder"
+    });
+    amplify.request.define('secret', 'ajax', {
+        url     : '/api/v1/secret',
+        type        : 'GET',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('add', 'ajax', {
+        url     : '/api/v1/add',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('getProposition', 'ajax', {
+        url     : '/api/v1/getProposition',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('vote', 'ajax', {
+        url     : '/api/v1/vote',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('addExpert', 'ajax', {
+        url     : '/api/v1/addExpert',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('removeExpert', 'ajax', {
+        url     : '/api/v1/removeExpert',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('create', 'ajax', {
+        url     : '/api/v1/create',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('delegate', 'ajax', {
+        url     : '/api/v1/delegate',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('undelegate', 'ajax', {
+        url     : '/api/v1/undelegate',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('delete', 'ajax', {
+        url     : '/api/v1/delete',
+        type        : 'POST',
+        decoder         : "myDecoder"
+    });
+    amplify.request.define('verify', 'ajax', {
+        url     : '/api/v1/verify/{email}/{token}',
+        type        : 'GET',
+        decoder         : "myDecoder"
+    });
 
-	// Définition du ractive
-	var mainRactive = new Ractive({
-		el		: "main-content",
-		template	: "#main-template",
-		data		: {
-			newTodo	: '',
-			todos	: []
-		}
-	});
-	var socket = io.connect('http://92.222.218.130:8080');
-	socket.on('pleaseRefresh', function() {
-		amplify.request({
-			resourceId	: 'getAll',
-			data		: {
-				type	: 'todos'
-			},
-			success		: function(data, xhr) {
-				mainRactive.set('todos', data);
-			},
-			error		: function(status, xhr) {
-				alert('An error occured : ' + status);
-			}
-		});
-	});
+    var token = '';
+    var nonce = 'arnaud';
+    var mainRactive = new Ractive({
+        el      : "main-content",
+        template    : "#main-template",
+        data        : {
+            newLabel    : '',
+            email   : '',
+            password    : '',
+            token   : '',
+            newDescription  : '',
+            newDomainId : '',
+            newParentId : '',
+            propositions    : []
+        }
+    });
+    
+    function refresh() {
+        amplify.request({
+            resourceId  : 'getProposition',
+            data        : {
+                type    : 'propositions'
+            },
+            success     : function(data, xhr) {
+                mainRactive.set('propositions', data);
+            },
+            error       : function(status, xhr) {
+                alert('An error occured : ' + status);
+            }
+        });
+    }
 
-	// Déclaration des events
-	// Ajout
-	mainRactive.on('add', function(event, id) {
-		amplify.request({
-			resourceId	: 'post',
-			data		: {
-				type	: 'todos',
-				content	: mainRactive.get('newTodo')
-			},
-			success 	: function(data, xhr) {
-				socket.emit('iModifiedIt');
-				mainRactive.set('newTodo', '');
-			},
-			error		: function(status, xhr) {
-				alert('An error occured : ' + status);
-			}
-		});
-	});
-	//Delete d'un todo
-	mainRactive.on('delete', function(event, id) {
-		amplify.request({
-			resourceId	: 'delete',
-			data		: {
-				type	: 'todos',
-				id	: id
-			},
-			success 	: function(data, xhr) {
-				socket.emit('iModifiedIt');
-			},
-			error		: function(status, xhr) {
-				alert('An error occured : ' + status);
-			}
-		});
-	});
-	// RAZ
-	mainRactive.on('deleteAll', function() {
-		amplify.request({
-			resourceId	: 'deleteAll',
-			data		: {
-				type	: 'todos'
-			},
-			success		: function(data, xhr) {
-				socket.emit('iModifiedIt');
-			},
-			error		: function(status, xhr) {
-				alert('An error occured : ' + status);
-			}
-		});
-	});
+    mainRactive.on('login', function() {
+        amplify.request({
+            resourceId  : 'secret',
+            data    : {},
+            success : function(data, xhr) {
+                token = data.token;
+                var date = (new Date()).toString();
+                var digest = Crypto.HMAC(Crypto.SHA1, mainRactive.get('email'), mainRactive.get('password'), { asString: true });
+                 digest = Crypto.HMAC(Crypto.SHA1, digest, date, { asString: true });
+                 digest = Crypto.HMAC(Crypto.SHA1, digest, token, { asString: true });
+                 digest = Crypto.HMAC(Crypto.SHA1, digest, nonce, { asString: true });
+                amplify.request({
+                    resourceId  : 'login',
+                    data    : {
+                        token   : token,
+                        email   : mainRactive.email,
+                        date        : date,
+                        nonce   : nonce,
+                        digest  : digest 
+                    },
+                    success : function(data, xhr) {},
+                    error   : function(status, xhr) {
+                        alert('An error occured : ' + status);
+                    }
+                });
+            },
+            error   : function(status, xhr) {
+                alert('An error occured : ' + status);
+            }
+        });
+    });
+    mainRactive.on('create', function(event, id) {
+        amplify.request({
+            resourceId  : 'create',
+            data        : {
+                email   : mainRactive.get('email'),
+                password    : mainRactive.get('password')
+            },
+            success     : function(data, xhr) {
+                refresh();
+            },
+            error       : function(status, xhr) {
+                alert('An error occured : ' + status);
+            }
+        });
+    });
+    
+    mainRactive.on('verify', function(event, id) {
+        amplify.request({
+            resourceId  : 'verify',
+            data        : {
+                email   : mainRactive.get('email'),
+                token   : mainRactive.get('token')
+            },
+            success     : function(data, xhr) {
+                refresh();
+            },
+            error       : function(status, xhr) {
+                alert('An error occured : ' + status);
+            }
+        });
+    });
 </script>

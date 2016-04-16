@@ -9,8 +9,8 @@ class AuthenticationWS extends WebService {
     };
 
     /**
-     * @api {get} /secret Retourne un token de session non attribué
-     * @apiName secret
+     * @api {get} authentication/secret Retourne un token de session non attribué
+     * @apiName Secret
      * @apiGroup Authentication
     */
     secret(req, res) {
@@ -19,7 +19,8 @@ class AuthenticationWS extends WebService {
         return crypto.randomBytes(48, function(ex, buf) {
             var token = buf.toString('hex');
             var query = 'INSERT INTO token (token) VALUES ("' + token + '")';
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+                if (err) return res.sendStatus(500);
                 return res.json({
                     token   : token
                 });
@@ -28,8 +29,8 @@ class AuthenticationWS extends WebService {
     };
 
     /**
-     * @api {post} /login Attribue le token de session au user
-     * @apiName login
+     * @api {post} authentication/login Attribue le token de session au user
+     * @apiName Login
      * @apiGroup Authentication
      *
      * @apiParam {String} token Token de la session en cours (donné par secret)
@@ -48,22 +49,24 @@ class AuthenticationWS extends WebService {
         var digest  = req.body.digest   || null;
         if (!email || !token || !nonce || !date || !digest) return res.sendStatus(400);
         var query = 'SELECT id, password FROM user WHERE email = ' + self.mySQL.escape(email) + ' AND isValid = 1';
-        return self.mySQL.query(query, function(row) {
+        return self.mySQL.query(query, function(err, row) {
+            if (err) return res.sendStatus(500);
             if (row.length === 0) return res.sendStatus(404);
             var userId      = row[0].id;
             var password    = row[0].password;
             query = 'SELECT 1 FROM token WHERE token = ' + self.mySQL.escape(token) + ' AND nonce IS NULL AND TIMESTAMPDIFF(MINUTE,creationDate,NOW()) < 30 AND (expirationDate IS NULL OR expirationDate > NOW())';
-            return self.mySQL.query(query, function(row) {
+            return self.mySQL.query(query, function(err, row) {
+                if (err) return res.sendStatus(500);
                 if (row.length === 0) return res.sendStatus(401);
                 var sDigest = crypto.createHmac('sha1', password).update(email).digest('hex');
-                // XXXXXXXXXX La date est été enlevée pour faciliter les tests XXXXXXXXXX
-                // sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
+                sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
                 console.log(sDigest);
                 if (sDigest != digest) return res.sendStatus(401);
                 query = 'UPDATE token SET nonce = ' + self.mySQL.escape(nonce) + ', userId = ' + userId + ', expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE token = ' + self.mySQL.escape(token);
-                return self.mySQL.query(query, function() {
+                return self.mySQL.query(query, function(err) {
+                    if (err) return res.sendStatus(500);
                     return res.sendStatus(418);
                 });
             });
@@ -71,8 +74,8 @@ class AuthenticationWS extends WebService {
     };
 
     /**
-     * @api {post} /login Fait expirer le token de session du user
-     * @apiName login
+     * @api {post} authentication/logout Fait expirer le token de session du user
+     * @apiName Logout
      * @apiGroup Authentication
      *
      * @apiParam {String} token Token de la session en cours (donné par secret)
@@ -82,10 +85,11 @@ class AuthenticationWS extends WebService {
     logout(req, res) {
         // Fait expirer l'ensemble des tokens actifs pour le user
         var self = this;
-        return self._checkAuth(req, res, function() {
+        return self._checkAuth(req, res, function(authReq) {
             var userId = req.userId;
             var query = 'UPDATE token SET expirationDate = NOW() WHERE userId = ' + userId + ' AND expirationDate > NOW()';
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+                if (err) return res.sendStatus(500);
                 return res.sendStatus(200);
             });
         });
