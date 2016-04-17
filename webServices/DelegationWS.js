@@ -6,7 +6,7 @@ class DelegationWS extends WebService {
     constructor() {
         super();
     };
-    
+
     /**
      * @api {post} delegation/create Attribue la voix du user à l'expert donné
      * @apiName Createdelegation
@@ -16,7 +16,7 @@ class DelegationWS extends WebService {
      * @apiParam {String} digest Hash du login, password, date, token & nonce
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {Number} expertId Id de l'expert à qui donner la voix
-    */
+     */
     create(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(req, res) {
@@ -45,7 +45,7 @@ class DelegationWS extends WebService {
      * @apiParam {String} digest Hash du login, password, date, token & nonce
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {Number} expertId Id de l'expert à qui retirer la voix du user
-    */
+     */
     delete(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(req, res) {
@@ -58,7 +58,30 @@ class DelegationWS extends WebService {
                 return res.sendStatus(201);
             });
         });
-    }
+    };
+
+    /**
+     * @api {post} /delegation/get Retourne les experts concernés par le user
+     * @apiName Getdelegation
+     * @apiGroup Delegation
+     *
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} date Date utilisée pour la génération du digest
+     */
+    get(req, res) {
+        var self = this;
+        return self._checkAuth(req, res, function(authReq) {
+            var userId = req.userId;
+            var query = 'SELECT e.id, e.domainId, e.skills ';
+            query += 'FROM expert AS e ';
+            query += 'INNER JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + userId;
+            return self.mySQL.query(query, function(err, rows) {
+                if (err) return res.sendStatus(500);
+                return res.json(rows);
+            });
+        });
+    };
 };
 
 module.exports = DelegationWS;

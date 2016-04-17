@@ -17,7 +17,7 @@ class ExpertWS extends WebService {
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {Number} domainId id du domaine de l'expert
      * @apiParam {String} skills compétences/présentation de l'expert (texte libre)
-    */
+     */
     create(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(authReq) {
@@ -46,7 +46,7 @@ class ExpertWS extends WebService {
      * @apiParam {String} token Token de la session en cours (donné par secret)
      * @apiParam {String} digest Hash du login, password, date, token & nonce
      * @apiParam {String} date Date utilisée pour la génération du digest
-    */
+     */
     delete(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(authReq) {
@@ -59,16 +59,42 @@ class ExpertWS extends WebService {
         });
     };
 
+    /**
+     * @api {post} expert/get Enlève l'expertise au user
+     * @apiName Getexpert
+     * @apiGroup Expert
+     *
+     * @apiParam {String} token (facultatif) Token de la session en cours (donné par secret)
+     * @apiParam {String} digest (facultatif) Hash du login, password, date, token & nonce
+     * @apiParam {String} date (facultatif) Date utilisée pour la génération du digest
+     * @apiParam {Number} domainId (facultatif) Id du domaine de l'expert
+     * @apiParam {Number} expertId (facultatif) Id de l'expert
+     * @apiParam {Number} limit (facultatif, défaut 10) Nombre de lignes à retourner
+     * @apiParam {Number} offset (facultatif, défaut 0) Début des lignes à retourner
+     */
     get(req, res) {
         var self = this;
+        var domainId = parseInt(req.body.domainId) || null;
+        var expertId = parseInt(req.body.expertId) || null;
+        var limit = parseInt(req.body.domainId) || 10;
+        var offset = parseInt(req.body.domainId) || 0;
         return self._checkAuthOpt(req, res, function(authReq) {
-            var selectExpertQuery = 'SELECT id, userId, domainId, skills, creationDate FROM expert';
+            var userId = authReq.userId;
+            var selectExpertQuery = 'SELECT e.id AS id, domainId, skills, e.creationDate AS creationDate, CASE WHEN d.id IS NULL THEN 0 ELSE 1 END AS isMine, COUNT(d2.userId) AS trusters FROM expert AS e ';
+            selectExpertQuery += 'LEFT JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + (userId || 0) + ' ';
+            selectExpertQuery += 'LEFT JOIN delegation AS d2 ON d.expertId = e.id ';
+            var criteria = [1];
+            if (domainId) criteria.push('domainId = ' + domainId);
+            if (expertId) criteria.push('expertId = ' + expertId);
+            selectExpertQuery += 'WHERE '.criteria.implode(' AND ');
+            selectExpertQuery += 'GROUP BY id ';
+            selectExpertQuery += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(selectExpertQuery, function(err, rows) {
                 if (err) return res.sendStatus(500);
                 return res.json(rows);
             });
         });
     };
-}
+};
 
 module.exports = ExpertWS;

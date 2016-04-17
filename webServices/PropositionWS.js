@@ -20,7 +20,7 @@ class PropositionWS extends WebService {
      * @apiParam {String} description Description de la proposition
      * @apiParam {Number} domainId Id du domaine de la proposition
      * @apiParam {Number} parentId (Facultatif, amendements seulement) Id de la proposition à laquelle est rattachée cet amendement
-    */
+     */
     create(req, res) {
         // Ajoute une proposition
         var self = this;
@@ -49,7 +49,7 @@ class PropositionWS extends WebService {
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {String} vote 'Y' (yes), 'N' (no) ou 'B' (blanc)
      * @apiParam {Number} propositionId Id de la proposition
-    */
+     */
     vote(req, res) {
         // Vote (positif ou négatif) pour une proposition
         var self = this;
@@ -92,12 +92,44 @@ class PropositionWS extends WebService {
      * @api {post} /getProposition Retourne toutes les propositions, amené à évoluer avec des paramètres optionnels
      * @apiName getProposition
      * @apiGroup Proposition
-    */
+     *
+     * @apiParam {String} token (facultatif) Token de la session en cours (donné par secret)
+     * @apiParam {String} digest (facultatif) Hash du login, password, date, token & nonce
+     * @apiParam {String} date (facultatif) Date utilisée pour la génération du digest
+     * @apiParam {Number} domainId (facultatif) Id du domaine de l'expert
+     * @apiParam {Number} expertId (facultatif) Id de l'expert
+     * @apiParam {Number} limit (facultatif, défaut 10) Nombre de lignes à retourner
+     * @apiParam {Number} offset (facultatif, défaut 0) Début des lignes à retourner
+     */
     get(req, res) {
         // Retourne une ou des propositions
+        var propositionId = parseInt(req.body.propositionId) || null;
+        var domainId = parseInt(req.body.domainId) || null;
+        var expertId = parseInt(req.body.expertId) || null;
+        var limit = parseInt(req.body.domainId) || 10;
+        var offset = parseInt(req.body.domainId) || 0;
         var self = this;
         self._checkAuthOpt(req, res, function(authReq) {
-            var query = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition';
+            var userId = authReq.userId || null;
+            var fields = [
+                'p.id AS id',
+                'label',
+                'description',
+                'p.creationDate AS creationDate',
+                'p.domainId AS domainId',
+                'parentId'
+            ];
+            if (expertId) fields.push('v.vote AS expertVote');
+            if (userId) fields.push('v2.vote AS myVote');
+            var query = 'SELECT ' + fields.implode(', ') + ' FROM proposition AS p ';
+            if (expertId) query += 'INNER JOIN vote AS v ON v.propositionId = p.id ';
+            if (expertId) query += 'INNER JOIN expert AS e ON e.userId = v.userId AND e.domainId = p.domainId ';
+            if (userId) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v.userId = ' + userId + ' ';
+            var criteria = ['p.parentId IS NULL'];
+            if (domainId) criteria.push('domainId = ' + domainId);
+            if (propositionId) criteria.push('propositionId = ' + propositionId);
+            query += 'WHERE ' + criteria.implode(' AND ') + ' ';
+            query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);
                 return res.json(rows);
