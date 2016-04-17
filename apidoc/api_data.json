@@ -88,7 +88,7 @@
     "groupTitle": "Authentication"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "authentication/secret",
     "title": "Retourne un token de session non attribu�",
     "name": "Secret",
@@ -186,11 +186,61 @@
     "groupTitle": "Delegation"
   },
   {
+    "type": "post",
+    "url": "/delegation/get",
+    "title": "Retourne les experts concern�s par le user",
+    "name": "Getdelegation",
+    "group": "Delegation",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilis�e pour la g�n�ration du digest</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/DelegationWS.js",
+    "groupTitle": "Delegation"
+  },
+  {
     "type": "get",
     "url": "domain/get",
     "title": "Retourne la liste des domaines",
     "name": "Getdomain",
     "group": "Domain",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>(Facultatif) Id du domaine</p>"
+          }
+        ]
+      }
+    },
     "version": "0.0.0",
     "filename": "nuitLiquide/webServices/DomainWS.js",
     "groupTitle": "Domain"
@@ -285,6 +335,71 @@
   },
   {
     "type": "post",
+    "url": "expert/get",
+    "title": "Enlève l'expertise au user",
+    "name": "Getexpert",
+    "group": "Expert",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>(facultatif) Token de la session en cours (donné par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>(facultatif) Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>(facultatif) Date utilisée pour la génération du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>(facultatif) Id du domaine de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>(facultatif) Id de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>(facultatif, défaut 10) Nombre de lignes à retourner</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>(facultatif, défaut 0) Début des lignes à retourner</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/ExpertWS.js",
+    "groupTitle": "Expert"
+  },
+  {
+    "type": "post",
     "url": "proposition/create",
     "title": "Fait expirer le token de session du user",
     "name": "Createproposition",
@@ -354,6 +469,61 @@
     "title": "Retourne toutes les propositions, amen� � �voluer avec des param�tres optionnels",
     "name": "getProposition",
     "group": "Proposition",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>(facultatif) Token de la session en cours (donn� par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>(facultatif) Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>(facultatif) Date utilis�e pour la g�n�ration du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "domainId",
+            "description": "<p>(facultatif) Id du domaine de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "expertId",
+            "description": "<p>(facultatif) Id de l'expert</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>(facultatif, d�faut 10) Nombre de lignes � retourner</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>(facultatif, d�faut 0) D�but des lignes � retourner</p>"
+          }
+        ]
+      }
+    },
     "version": "0.0.0",
     "filename": "nuitLiquide/webServices/PropositionWS.js",
     "groupTitle": "Proposition"
