@@ -17,7 +17,7 @@ class UserWS extends WebService {
      *
      * @apiParam {String} email email du compte
      * @apiParam {String} password hash (algo à définir côté front, doit juste être reproductible) du password
-    */
+     */
     create(req, res) {
         // Ajoute une ligne dans user (valide false), envoie un mail
         var self = this;
@@ -55,7 +55,7 @@ class UserWS extends WebService {
      * @apiParam {String} digest Hash du login, password, date, token & nonce
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {String} password hash (algo à définir côté front, doit juste être reproductible) du password
-    */
+     */
     delete(req, res) {
         // Retire une ligne dans user
         var self = this;
@@ -78,7 +78,7 @@ class UserWS extends WebService {
      *
      * @apiParam {String} token Token d'activation (normalement envoyé par mail, pas dév pour le moment)
      * @apiParam {String} email email du user
-    */
+     */
     verify(req, res) {
         // Passe un user à valide
         var self = this;

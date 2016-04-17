@@ -9,7 +9,7 @@ class AuthenticationWS extends WebService {
     };
 
     /**
-     * @api {get} authentication/secret Retourne un token de session non attribué
+     * @api {post} authentication/secret Retourne un token de session non attribué
      * @apiName Secret
      * @apiGroup Authentication
     */
