@@ -21,6 +21,7 @@ CREATE TABLE token (
     token varchar(127) NOT NULL,
     nonce varchar(127),
     creationDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expirationDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY i_token_userId (userId),
     CONSTRAINT fk_token_userId FOREIGN KEY (userId) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

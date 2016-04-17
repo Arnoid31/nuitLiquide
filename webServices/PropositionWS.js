@@ -121,14 +121,14 @@ class PropositionWS extends WebService {
             ];
             if (expertId) fields.push('v.vote AS expertVote');
             if (userId) fields.push('v2.vote AS myVote');
-            var query = 'SELECT ' + fields.implode(', ') + ' FROM proposition AS p ';
+            var query = 'SELECT ' + fields.join(', ') + ' FROM proposition AS p ';
             if (expertId) query += 'INNER JOIN vote AS v ON v.propositionId = p.id ';
             if (expertId) query += 'INNER JOIN expert AS e ON e.userId = v.userId AND e.domainId = p.domainId ';
             if (userId) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v.userId = ' + userId + ' ';
             var criteria = ['p.parentId IS NULL'];
             if (domainId) criteria.push('domainId = ' + domainId);
             if (propositionId) criteria.push('propositionId = ' + propositionId);
-            query += 'WHERE ' + criteria.implode(' AND ') + ' ';
+            query += 'WHERE ' + criteria.join(' AND ') + ' ';
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);

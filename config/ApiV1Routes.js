@@ -85,6 +85,12 @@ class ApiV1Routes extends Routes {
                 }
             }, {
                 'verb'      : 'post',
+                'route'     : '/user/verify',
+                'function'  : function(req, res) {
+                    return userWS.verifyPost(req, res);
+                }
+            },{
+                'verb'      : 'post',
                 'route'     : '/user/verify/:email/:token',
                 'function'  : function(req, res) {
                     return userWS.verify(req, res);
