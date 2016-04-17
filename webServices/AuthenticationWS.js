@@ -18,6 +18,7 @@ class AuthenticationWS extends WebService {
         var self = this;
         return crypto.randomBytes(48, function(ex, buf) {
             var token = buf.toString('hex');
+            
             var query = 'INSERT INTO token (token) VALUES ("' + token + '")';
             return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
@@ -62,6 +63,9 @@ class AuthenticationWS extends WebService {
                 sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
+                
+                sDiget		= email + password + date + token + nonce;
+                
                 console.log(sDigest);
                 if (sDigest != digest) return res.sendStatus(401);
                 query = 'UPDATE token SET nonce = ' + self.mySQL.escape(nonce) + ', userId = ' + userId + ', expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE token = ' + self.mySQL.escape(token);
