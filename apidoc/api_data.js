@@ -509,6 +509,20 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Array",
+            "optional": false,
+            "field": "vote",
+            "description": "<p>(facultatif) 'Y', 'N' et/ou 'B' (toujours en array), retourne uniquement les propositions pour lesquelles le user a vot�</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "mine",
+            "description": "<p>(facultatif) Retourne uniquement les propositions du user</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "Number",
             "optional": false,
             "field": "limit",
@@ -645,6 +659,36 @@ define({ "api": [
             "optional": false,
             "field": "password",
             "description": "<p>hash (algo � d�finir c�t� front, doit juste �tre reproductible) du password</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/UserWS.js",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "user/verify/",
+    "title": "Passe un user � actif",
+    "name": "Verifyuser",
+    "group": "User",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token d'activation (normalement envoy� par mail, pas d�v pour le moment)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>email du user</p>"
           }
         ]
       }

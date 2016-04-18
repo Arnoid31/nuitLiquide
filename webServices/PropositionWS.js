@@ -98,6 +98,8 @@ class PropositionWS extends WebService {
      * @apiParam {String} date (facultatif) Date utilisée pour la génération du digest
      * @apiParam {Number} domainId (facultatif) Id du domaine de l'expert
      * @apiParam {Number} expertId (facultatif) Id de l'expert
+     * @apiParam {Array} vote (facultatif) 'Y', 'N' et/ou 'B' (toujours en array), retourne uniquement les propositions pour lesquelles le user a voté
+     * @apiParam {Boolean} mine (facultatif) Retourne uniquement les propositions du user
      * @apiParam {Number} limit (facultatif, défaut 10) Nombre de lignes à retourner
      * @apiParam {Number} offset (facultatif, défaut 0) Début des lignes à retourner
      */
@@ -106,6 +108,17 @@ class PropositionWS extends WebService {
         var propositionId = parseInt(req.body.propositionId) || null;
         var domainId = parseInt(req.body.domainId) || null;
         var expertId = parseInt(req.body.expertId) || null;
+        var vote = req.body.vote || null;
+        var mine = req.body.mine || null;
+        if (mine != true && mine != false) mine = null;
+        if (vote) {
+            for (var int_voteIndex in vote) {
+                if (vote[int_voteIndex] != 'Y' && vote[int_voteIndex] != 'N' && vote[int_voteIndex] != 'B') {
+                    delete vote[int_voteIndex];
+                }
+            }
+        }
+        if (vote.length === 0) vote = null;
         var limit = parseInt(req.body.limit) || 10;
         var offset = parseInt(req.body.offset) || 0;
         var self = this;
@@ -124,9 +137,12 @@ class PropositionWS extends WebService {
             var query = 'SELECT ' + fields.join(', ') + ' FROM proposition AS p ';
             if (expertId) query += 'INNER JOIN vote AS v ON v.propositionId = p.id ';
             if (expertId) query += 'INNER JOIN expert AS e ON e.userId = v.userId AND e.domainId = p.domainId ';
-            if (userId) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' ';
+            if (userId && !vote ) query += 'LEFT JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' ';
+            if (userId && vote ) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' AND v2.vote IN (' + vote.join(',') + ') ';
             var criteria = ['p.parentId IS NULL'];
             if (domainId) criteria.push('p.domainId = ' + domainId);
+            if (userId && (mine == true)) criteria.push('p.userId = ' + userId);
+            if (userId && (mine == false)) criteria.push('p.userId != ' + userId);
             if (propositionId) criteria.push('p.id = ' + propositionId);
             query += 'WHERE ' + criteria.join(' AND ') + ' ';
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
