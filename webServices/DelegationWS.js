@@ -72,10 +72,10 @@ class DelegationWS extends WebService {
     get(req, res) {
         var self = this;
         return self._checkAuth(req, res, function(authReq) {
-            var userId = req.userId;
-            var query = 'SELECT e.id, e.domainId, e.skills ';
+            var userId = authReq.userId;
+            var query = 'SELECT e.id AS id, e.domainId AS domainId, e.firstName AS firstName, e.lastName AS lastName, e.skills AS skills ';
             query += 'FROM expert AS e ';
-            query += 'INNER JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + userId;
+            query += 'INNER JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + userId + ' ';
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);
                 return res.json(rows);

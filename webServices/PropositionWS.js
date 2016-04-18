@@ -119,11 +119,11 @@ class PropositionWS extends WebService {
                 }
             }
         }
-        if (vote.length === 0) vote = null;
+        if (vote && vote.length === 0) vote = null;
         var limit = parseInt(req.body.limit) || 10;
         var offset = parseInt(req.body.offset) || 0;
         var self = this;
-        self._checkAuthOpt(req, res, function(authReq) {
+        return self._checkAuthOpt(req, res, function(authReq) {
             var userId = authReq.userId || null;
             var fields = [
                 'p.id AS id',

@@ -27,9 +27,11 @@ class ExpertWS extends WebService {
                 if (err) return res.sendStatus(500);
                 if (rows.length > 0) return res.sendStatus(403);
                 var domainId = parseInt(authReq.body.domainId) || null;
+                var firstName = authReq.body.firstName || null;
+                var lastName = authReq.body.lastName || null;
                 var skills = authReq.body.skills || null;
-                if (!domainId || !skills) return res.sendStatus(400);
-                var query = 'INSERT INTO expert (userId, domainId, skills) VALUES (' + userId + ', ' + domainId + ', ' + self.mySQL.escape(skills) + ')';
+                if (!domainId || !skills || !firstName || !lastName) return res.sendStatus(400);
+                var query = 'INSERT INTO expert (userId, domainId, firstName, lastName, skills) VALUES (' + userId + ', ' + domainId + ', ' + self.mySQL.escape(firstName) + ', ' + self.mySQL.escape(lastName) + ', ' + self.mySQL.escape(skills) + ')';
                 self.mySQL.query(query, function(err) {
                     if (err) return res.sendStatus(500);
                     return res.sendStatus(201);
@@ -80,7 +82,7 @@ class ExpertWS extends WebService {
         var offset = parseInt(req.body.offset) || 0;
         return self._checkAuthOpt(req, res, function(authReq) {
             var userId = authReq.userId;
-            var selectExpertQuery = 'SELECT e.id AS id, domainId, skills, e.creationDate AS creationDate, IF(d.userId IS NULL, 0, 1) AS isMine, COUNT(d2.userId) AS trusters FROM expert AS e ';
+            var selectExpertQuery = 'SELECT e.id AS id, domainId, firstName, lastName, skills, e.creationDate AS creationDate, IF(d.userId IS NULL, 0, 1) AS isMine, COUNT(d2.userId) AS trusters FROM expert AS e ';
             selectExpertQuery += 'LEFT JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + (userId || 0) + ' ';
             selectExpertQuery += 'LEFT JOIN delegation AS d2 ON d2.expertId = e.id ';
             var criteria = ['1'];

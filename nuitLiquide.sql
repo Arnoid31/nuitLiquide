@@ -75,3 +75,14 @@ CREATE TABLE vote (
     PRIMARY KEY (userId, propositionId),
     CONSTRAINT fk_vote_propositionId FOREIGN KEY (propositionId) REFERENCES proposition(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE message (
+    id int unsigned NOT NULL AUTO_INCREMENT,
+    userId int unsigned NOT NULL,
+    label varchar(255) NOT NULL,
+    content text NOT NULL,
+    isRed tinyint(1) unsigned NOT NULL DEFAULT 0,
+    creationDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_message_idUser FOREIGN KEY (userId) REFERENCES user(id)
+);

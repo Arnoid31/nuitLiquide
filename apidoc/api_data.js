@@ -400,6 +400,108 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/delegation/delete",
+    "title": "Supprime le message",
+    "name": "Deletemessage",
+    "group": "Message",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donné par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilisée pour la génération du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "messageId",
+            "description": "<p>Id du message à supprimer</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/MessageWS.js",
+    "groupTitle": "Message"
+  },
+  {
+    "type": "post",
+    "url": "/messageId/get",
+    "title": "Retourne les messages du user",
+    "name": "GetmessageId",
+    "group": "Message",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>Token de la session en cours (donné par secret)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "digest",
+            "description": "<p>Hash du login, password, date, token &amp; nonce</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "date",
+            "description": "<p>Date utilisée pour la génération du digest</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "optional": false,
+            "field": "isRed",
+            "description": "<p>(facultatif) Retourne uniquement les messages lus/non lus</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "limit",
+            "description": "<p>(facultatif, défaut 10) Nombre de lignes à retourner</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "offset",
+            "description": "<p>(facultatif, défaut 0) Début des lignes à retourner</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "nuitLiquide/webServices/MessageWS.js",
+    "groupTitle": "Message"
+  },
+  {
+    "type": "post",
     "url": "proposition/create",
     "title": "Fait expirer le token de session du user",
     "name": "Createproposition",

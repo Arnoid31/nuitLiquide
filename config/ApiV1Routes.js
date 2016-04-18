@@ -5,6 +5,7 @@ var AuthenticationWS    = require('./../webServices/AuthenticationWS');
 var DelegationWS        = require('./../webServices/DelegationWS');
 var DomainWS            = require('./../webServices/DomainWS');
 var ExpertWS            = require('./../webServices/ExpertWS');
+var MessageWS           = require('./../webServices/MessageWS');
 var PropositionWS       = require('./../webServices/PropositionWS');
 var UserWS              = require('./../webServices/UserWS');
 
@@ -14,6 +15,7 @@ class ApiV1Routes extends Routes {
         var delegationWS        = new DelegationWS();
         var domainWS            = new DomainWS();
         var expertWS            = new ExpertWS();
+        var messageWS           = new MessageWS();
         var propositionWS       = new PropositionWS();
         var userWS              = new UserWS();
         super('/api/v1/', [
@@ -112,6 +114,18 @@ class ApiV1Routes extends Routes {
                 'route'     : '/proposition/get',
                 'function'  : function(req, res) {
                     return propositionWS.get(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/message/get',
+                'function'  : function(req, res) {
+                    return messageWS.get(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/message/delete',
+                'function'  : function(req, res) {
+                    return messageWS.delete(req, res);
                 }
             }
         ]);
