@@ -12,6 +12,15 @@ var serverConfig = new ServerConfig();
 var apiV1Routes = new ApiV1Routes();
 var baseRoutes = new BaseRoutes();
 
+app.use(function(req, res, next) {
+    if (req.headers.origin) {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Authorization');
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE');
+        if (req.method === 'OPTIONS') return res.sendStatus(200);
+    }
+    next();
+});
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.use(apiV1Routes.getRoute(), apiV1Routes.getRouter());

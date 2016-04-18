@@ -106,8 +106,8 @@ class PropositionWS extends WebService {
         var propositionId = parseInt(req.body.propositionId) || null;
         var domainId = parseInt(req.body.domainId) || null;
         var expertId = parseInt(req.body.expertId) || null;
-        var limit = parseInt(req.body.domainId) || 10;
-        var offset = parseInt(req.body.domainId) || 0;
+        var limit = parseInt(req.body.limit) || 10;
+        var offset = parseInt(req.body.offset) || 0;
         var self = this;
         self._checkAuthOpt(req, res, function(authReq) {
             var userId = authReq.userId || null;
@@ -121,14 +121,14 @@ class PropositionWS extends WebService {
             ];
             if (expertId) fields.push('v.vote AS expertVote');
             if (userId) fields.push('v2.vote AS myVote');
-            var query = 'SELECT ' + fields.implode(', ') + ' FROM proposition AS p ';
+            var query = 'SELECT ' + fields.join(', ') + ' FROM proposition AS p ';
             if (expertId) query += 'INNER JOIN vote AS v ON v.propositionId = p.id ';
             if (expertId) query += 'INNER JOIN expert AS e ON e.userId = v.userId AND e.domainId = p.domainId ';
-            if (userId) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v.userId = ' + userId + ' ';
+            if (userId) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' ';
             var criteria = ['p.parentId IS NULL'];
-            if (domainId) criteria.push('domainId = ' + domainId);
-            if (propositionId) criteria.push('propositionId = ' + propositionId);
-            query += 'WHERE ' + criteria.implode(' AND ') + ' ';
+            if (domainId) criteria.push('p.domainId = ' + domainId);
+            if (propositionId) criteria.push('p.id = ' + propositionId);
+            query += 'WHERE ' + criteria.join(' AND ') + ' ';
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);

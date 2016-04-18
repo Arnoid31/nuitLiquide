@@ -12,7 +12,7 @@ class AuthenticationWS extends WebService {
      * @api {post} authentication/secret Retourne un token de session non attribué
      * @apiName Secret
      * @apiGroup Authentication
-    */
+     */
     secret(req, res) {
         // Crée le token, renvoie secret
         var self = this;
@@ -38,7 +38,7 @@ class AuthenticationWS extends WebService {
      * @apiParam {String} nonce Valeur aléatoire donnée par le front
      * @apiParam {String} date Date utilisée pour la génération du digest
      * @apiParam {String} email Email du user
-    */
+     */
     login(req, res) {
         // Vérifie hash, ajoute nonce dans token
         var self = this;
@@ -81,13 +81,13 @@ class AuthenticationWS extends WebService {
      * @apiParam {String} token Token de la session en cours (donné par secret)
      * @apiParam {String} digest Hash du login, password, date, token & nonce
      * @apiParam {String} date Date utilisée pour la génération du digest
-    */
+     */
     logout(req, res) {
         // Fait expirer l'ensemble des tokens actifs pour le user
         var self = this;
         return self._checkAuth(req, res, function(authReq) {
             var userId = req.userId;
-            var query = 'UPDATE token SET expirationDate = NOW() WHERE userId = ' + userId + ' AND expirationDate > NOW()';
+            var query = 'DELETE FROM token WHERE userId = ' + userId;
             return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
                 return res.sendStatus(200);

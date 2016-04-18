@@ -76,18 +76,18 @@ class ExpertWS extends WebService {
         var self = this;
         var domainId = parseInt(req.body.domainId) || null;
         var expertId = parseInt(req.body.expertId) || null;
-        var limit = parseInt(req.body.domainId) || 10;
-        var offset = parseInt(req.body.domainId) || 0;
+        var limit = parseInt(req.body.limit) || 10;
+        var offset = parseInt(req.body.offset) || 0;
         return self._checkAuthOpt(req, res, function(authReq) {
             var userId = authReq.userId;
-            var selectExpertQuery = 'SELECT e.id AS id, domainId, skills, e.creationDate AS creationDate, CASE WHEN d.id IS NULL THEN 0 ELSE 1 END AS isMine, COUNT(d2.userId) AS trusters FROM expert AS e ';
+            var selectExpertQuery = 'SELECT e.id AS id, domainId, skills, e.creationDate AS creationDate, IF(d.userId IS NULL, 0, 1) AS isMine, COUNT(d2.userId) AS trusters FROM expert AS e ';
             selectExpertQuery += 'LEFT JOIN delegation AS d ON d.expertId = e.id AND d.userId = ' + (userId || 0) + ' ';
-            selectExpertQuery += 'LEFT JOIN delegation AS d2 ON d.expertId = e.id ';
-            var criteria = [1];
-            if (domainId) criteria.push('domainId = ' + domainId);
-            if (expertId) criteria.push('expertId = ' + expertId);
-            selectExpertQuery += 'WHERE '.criteria.implode(' AND ');
-            selectExpertQuery += 'GROUP BY id ';
+            selectExpertQuery += 'LEFT JOIN delegation AS d2 ON d2.expertId = e.id ';
+            var criteria = ['1'];
+            if (domainId) criteria.push('e.domainId = ' + domainId);
+            if (expertId) criteria.push('e.id = ' + expertId);
+            selectExpertQuery += 'WHERE ' + criteria.join(' AND ') + ' ';
+            selectExpertQuery += 'GROUP BY e.id ';
             selectExpertQuery += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(selectExpertQuery, function(err, rows) {
                 if (err) return res.sendStatus(500);
