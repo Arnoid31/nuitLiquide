@@ -497,6 +497,13 @@ define({ "api": [
             "group": "Parameter",
             "type": "Number",
             "optional": false,
+            "field": "propositionId",
+            "description": "<p>(facultatif) Id de la proposition, retourne les amendements si renseign�</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
             "field": "domainId",
             "description": "<p>(facultatif) Id du domaine de l'expert</p>"
           },

@@ -96,6 +96,7 @@ class PropositionWS extends WebService {
      * @apiParam {String} token (facultatif) Token de la session en cours (donné par secret)
      * @apiParam {String} digest (facultatif) Hash du login, password, date, token & nonce
      * @apiParam {String} date (facultatif) Date utilisée pour la génération du digest
+     * @apiParam {Number} propositionId (facultatif) Id de la proposition, retourne les amendements si renseigné
      * @apiParam {Number} domainId (facultatif) Id du domaine de l'expert
      * @apiParam {Number} expertId (facultatif) Id de l'expert
      * @apiParam {Array} vote (facultatif) 'Y', 'N' et/ou 'B' (toujours en array), retourne uniquement les propositions pour lesquelles le user a voté
@@ -137,8 +138,8 @@ class PropositionWS extends WebService {
             var query = 'SELECT ' + fields.join(', ') + ' FROM proposition AS p ';
             if (expertId) query += 'INNER JOIN vote AS v ON v.propositionId = p.id ';
             if (expertId) query += 'INNER JOIN expert AS e ON e.userId = v.userId AND e.domainId = p.domainId ';
-            if (userId && !vote ) query += 'LEFT JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' ';
-            if (userId && vote ) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' AND v2.vote IN (' + vote.join(',') + ') ';
+            if (userId && !vote) query += 'LEFT JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' ';
+            if (userId && vote) query += 'INNER JOIN vote AS v2 ON v2.propositionId = p.id AND v2.userId = ' + userId + ' AND v2.vote IN (' + vote.join(',') + ') ';
             var criteria = ['p.parentId IS NULL'];
             if (domainId) criteria.push('p.domainId = ' + domainId);
             if (userId && (mine == true)) criteria.push('p.userId = ' + userId);
@@ -148,6 +149,14 @@ class PropositionWS extends WebService {
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);
+                if (propositionId) {
+                    subQuery = 'SELECT p.id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
+                    return self.mySQL.query(subQuery, function(err, rows2) {
+                        if (err) return res.sendStatus(500);
+                        if (rows2.length > 0) rows[0].amendements = rows2;
+                        return res.json(rows);
+                    });
+                }
                 return res.json(rows);
             });
         });
