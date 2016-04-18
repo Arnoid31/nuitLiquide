@@ -18,7 +18,8 @@ class AuthenticationWS extends WebService {
         var self = this;
         return crypto.randomBytes(48, function(ex, buf) {
             var token = buf.toString('hex');
-            var query = 'INSERT INTO token (token) VALUES ("' + token + '")';
+            
+            var query = 'INSERT INTO token (token, creationDate) VALUES ("' + token + '", NOW())';
             return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
                 return res.json({
@@ -56,12 +57,20 @@ class AuthenticationWS extends WebService {
             var password    = row[0].password;
             query = 'SELECT 1 FROM token WHERE token = ' + self.mySQL.escape(token) + ' AND nonce IS NULL AND TIMESTAMPDIFF(MINUTE,creationDate,NOW()) < 30 AND (expirationDate IS NULL OR expirationDate > NOW())';
             return self.mySQL.query(query, function(err, row) {
+            
+            	console.log(err);
                 if (err) return res.sendStatus(500);
                 if (row.length === 0) return res.sendStatus(401);
+                
+                
+                /*
                 var sDigest = crypto.createHmac('sha1', password).update(email).digest('hex');
                 sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
                 sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
+                */
+                var sDigest		= email + password + date + token + nonce;
+                
                 console.log(sDigest);
                 if (sDigest != digest) return res.sendStatus(401);
                 query = 'UPDATE token SET nonce = ' + self.mySQL.escape(nonce) + ', userId = ' + userId + ', expirationDate = DATE_ADD(NOW(), INTERVAL 30 MINUTE) WHERE token = ' + self.mySQL.escape(token);

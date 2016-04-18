@@ -42,6 +42,10 @@ class WebService {
             sDigest     = crypto.createHmac('sha1', date).update(sDigest).digest('hex');
             sDigest     = crypto.createHmac('sha1', token).update(sDigest).digest('hex');
             sDigest     = crypto.createHmac('sha1', nonce).update(sDigest).digest('hex');
+
+           	// Pour le moment digest simple       
+            sDigest		= email + password + date + token + nonce;
+                                       
             if (sDigest != digest) {
                 if (opt == true) return cb(req, res);
                 return res.sendStatus(401);

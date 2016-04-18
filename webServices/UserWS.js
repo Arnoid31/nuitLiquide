@@ -71,19 +71,22 @@ class UserWS extends WebService {
         });
     };
 
+
     /**
-     * @api {get} user/verify/:email/:token Passe un user à actif
+     * @api {post} user/verify/ Passe un user à actif
      * @apiName Verifyuser
      * @apiGroup User
      *
      * @apiParam {String} token Token d'activation (normalement envoyé par mail, pas dév pour le moment)
      * @apiParam {String} email email du user
      */
-    verify(req, res) {
+
+    verifyPost(req, res) {
         // Passe un user à valide
         var self = this;
-        var email = req.params.email || null;
-        var token = req.params.token || null;
+        var email = req.body.email || null;
+        var token = req.body.token || null;
+        
         if (!email || !token) return res.sendStatus(400);
         var query = 'SELECT id FROM user WHERE email = ' + self.mySQL.escape(email) + ' AND isValid = 0';
         return self.mySQL.query(query, function(err, row) {
@@ -100,6 +103,46 @@ class UserWS extends WebService {
             });
         });
     };
+    
+    
+    
+
+    /**
+     * @api {get} user/verify/:email/:token Passe un user à actif
+
+     * @apiName Verifyuser
+     * @apiGroup User
+     *
+     * @apiParam {String} token Token d'activation (normalement envoyé par mail, pas dév pour le moment)
+     * @apiParam {String} email email du user
+
+     */
+     
+     
+    verify(req, res) {
+        // Passe un user à valide
+        var self = this;
+        var email = req.params.email || null;
+        var token = req.params.token || null;
+        
+        if (!email || !token) return res.sendStatus(400);
+        var query = 'SELECT id FROM user WHERE email = ' + self.mySQL.escape(email) + ' AND isValid = 0';
+        return self.mySQL.query(query, function(err, row) {
+            if (err) res.sendStatus(500);
+            if (row.length === 0) return res.sendStatus(404);
+            var userId = row[0].id;
+            query = 'UPDATE user SET isValid = 1 WHERE id = ' + userId;
+            return self.mySQL.query(query, function(err) {
+                if (err) res.sendStatus(500);
+                query = 'DELETE FROM toValid WHERE userId = ' + userId;
+                return self.mySQL.query(query, function() {
+                    return res.sendStatus(200);
+                });
+            });
+        });
+    };
+    
+    
 };
 
 module.exports = UserWS;
