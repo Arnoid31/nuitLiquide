@@ -33,7 +33,12 @@ class PropositionWS extends WebService {
             if (!label || !description || !domainId) return res.sendStatus(400);
             var query = 'INSERT INTO proposition (label, description, userId, domainId' + ((!parentId) ? '' : ', parentId') +') ';
             query += 'VALUES (' + self.mySQL.escape(label) + ', ' + self.mySQL.escape(description) + ', ' + userId + ', ' + domainId + ((!parentId) ? '' : ', ' + parentId) + ')';
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+           		 if (err) {
+                	console.log(err);
+                 	return res.sendStatus(500); 
+                }
+            
                 return res.sendStatus(201);
             });
         });
@@ -148,7 +153,10 @@ class PropositionWS extends WebService {
             query += 'WHERE ' + criteria.join(' AND ') + ' ';
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
-                if (err) return res.sendStatus(500);
+                if (err) {
+                	console.log(err);
+                 	return res.sendStatus(500); 
+                }
                 if (propositionId) {
                     subQuery = 'SELECT p.id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
                     return self.mySQL.query(subQuery, function(err, rows2) {
