@@ -158,9 +158,14 @@ class PropositionWS extends WebService {
                  	return res.sendStatus(500); 
                 }
                 if (propositionId) {
-                    subQuery = 'SELECT p.id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
+                    var subQuery = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
                     return self.mySQL.query(subQuery, function(err, rows2) {
-                        if (err) return res.sendStatus(500);
+                         if (err) {
+				        	console.log(err);
+				         	return res.sendStatus(500); 
+				        }
+                        
+                        
                         if (rows2.length > 0) rows[0].amendements = rows2;
                         return res.json(rows);
                     });
