@@ -103,6 +103,23 @@ class AuthenticationWS extends WebService {
             });
         });
     };
+
+    
+    /**
+     * @api {post} authentication/checkToken permet de connaitre l'etat connecte ou en fonction du token
+     * @apiName checkToken
+     * @apiGroup Authentication
+     * @apiParam {String} digest Hash du login, password, date, token & nonce
+     * @apiParam {String} date Date utilisée pour la génération du digest
+     * @apiParam {String} token Token de la session en cours (donné par secret)
+     */
+    checkToken(req, res) {
+        var self = this;
+        return self._checkAuth(req, res, function(authReq) {
+            res.sendStatus(200);
+            return res.json(rows);
+        });
+    };
 };
 
 module.exports = AuthenticationWS;
