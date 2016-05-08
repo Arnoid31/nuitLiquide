@@ -124,6 +124,13 @@ class PropositionWS extends WebService {
                 }
             }
         }
+        
+        // format vote
+        for (var int_voteIndex in vote) {
+        	vote[int_voteIndex] = "'" + vote[int_voteIndex] + "'";
+        }
+        
+        
         if (vote && vote.length === 0) vote = null;
         var limit = parseInt(req.body.limit) || 10;
         var offset = parseInt(req.body.offset) || 0;
@@ -157,7 +164,9 @@ class PropositionWS extends WebService {
                 	console.log(err);
                  	return res.sendStatus(500); 
                 }
-                if (propositionId) {
+                
+                
+                if (rows.length > 0 && propositionId) {
                     var subQuery = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
                     return self.mySQL.query(subQuery, function(err, rows2) {
                          if (err) {
