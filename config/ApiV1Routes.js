@@ -2,6 +2,7 @@
 
 var Routes              = require('./../libs/Routes');
 var AuthenticationWS    = require('./../webServices/AuthenticationWS');
+var CommentWS           = require('./../webServices/CommentWS');
 var DelegationWS        = require('./../webServices/DelegationWS');
 var DomainWS            = require('./../webServices/DomainWS');
 var ExpertWS            = require('./../webServices/ExpertWS');
@@ -12,6 +13,7 @@ var UserWS              = require('./../webServices/UserWS');
 class ApiV1Routes extends Routes {
     constructor() {
         var authenticationWS    = new AuthenticationWS();
+        var commentWS           = new CommentWS();
         var delegationWS        = new DelegationWS();
         var domainWS            = new DomainWS();
         var expertWS            = new ExpertWS();
@@ -126,6 +128,12 @@ class ApiV1Routes extends Routes {
                 'route'     : '/message/delete',
                 'function'  : function(req, res) {
                     return messageWS.delete(req, res);
+                }
+            }, {
+                'verb'      : 'post',
+                'route'     : '/comment/create',
+                'function'  : function(req, res) {
+                    return commentWS.create(req, res);
                 }
             }
         ]);

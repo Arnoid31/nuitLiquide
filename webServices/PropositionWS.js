@@ -9,7 +9,7 @@ class PropositionWS extends WebService {
     };
 
     /**
-     * @api {post} proposition/create Fait expirer le token de session du user
+     * @api {post} proposition/create Ajoute une proposition
      * @apiName Createproposition
      * @apiGroup Proposition
      *
@@ -40,7 +40,7 @@ class PropositionWS extends WebService {
     };
 
     /**
-     * @api {post} /vote Fait expirer le token de session du user
+     * @api {post} proposition/vote Crée un vote sur la proposition donnée
      * @apiName vote
      * @apiGroup Proposition
      *
@@ -89,8 +89,8 @@ class PropositionWS extends WebService {
     };
 
     /**
-     * @api {post} /getProposition Retourne toutes les propositions, amené à évoluer avec des paramètres optionnels
-     * @apiName getProposition
+     * @api {post} proposition/get Retourne toutes les propositions
+     * @apiName Getproposition
      * @apiGroup Proposition
      *
      * @apiParam {String} token (facultatif) Token de la session en cours (donné par secret)
@@ -150,11 +150,15 @@ class PropositionWS extends WebService {
             return self.mySQL.query(query, function(err, rows) {
                 if (err) return res.sendStatus(500);
                 if (propositionId) {
-                    subQuery = 'SELECT p.id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
+                    var subQuery = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
                     return self.mySQL.query(subQuery, function(err, rows2) {
                         if (err) return res.sendStatus(500);
-                        if (rows2.length > 0) rows[0].amendements = rows2;
-                        return res.json(rows);
+                        var subSubQuery = 'SELECT id, label, description, creationDate FROM comment WHERE propositionId = ' + rows[0].id + ' ';
+                        return self.mySQL.query(subSubQuery, function(err, rows3) {
+                            if (err) return res.sendStatus(500);
+                            if (rows3.length > 0) rows[0].comments = rows3;
+                            return res.json(rows);
+                        });
                     });
                 }
                 return res.json(rows);
