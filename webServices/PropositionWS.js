@@ -33,7 +33,12 @@ class PropositionWS extends WebService {
             if (!label || !description || !domainId) return res.sendStatus(400);
             var query = 'INSERT INTO proposition (label, description, userId, domainId' + ((!parentId) ? '' : ', parentId') +') ';
             query += 'VALUES (' + self.mySQL.escape(label) + ', ' + self.mySQL.escape(description) + ', ' + userId + ', ' + domainId + ((!parentId) ? '' : ', ' + parentId) + ')';
-            return self.mySQL.query(query, function() {
+            return self.mySQL.query(query, function(err) {
+           		 if (err) {
+                	console.log(err);
+                 	return res.sendStatus(500); 
+                }
+            
                 return res.sendStatus(201);
             });
         });
@@ -119,6 +124,13 @@ class PropositionWS extends WebService {
                 }
             }
         }
+        
+        // format vote
+        for (var int_voteIndex in vote) {
+        	vote[int_voteIndex] = "'" + vote[int_voteIndex] + "'";
+        }
+        
+        
         if (vote && vote.length === 0) vote = null;
         var limit = parseInt(req.body.limit) || 10;
         var offset = parseInt(req.body.offset) || 0;
@@ -148,17 +160,23 @@ class PropositionWS extends WebService {
             query += 'WHERE ' + criteria.join(' AND ') + ' ';
             query += 'LIMIT ' + limit + ' OFFSET ' + offset;
             return self.mySQL.query(query, function(err, rows) {
-                if (err) return res.sendStatus(500);
-                if (propositionId) {
+                if (err) {
+                	console.log(err);
+                 	return res.sendStatus(500); 
+                }
+                
+                
+                if (rows.length > 0 && propositionId) {
                     var subQuery = 'SELECT id, label, description, creationDate, domainId, parentId FROM proposition WHERE parentId = ' + rows[0].id + ' ';
                     return self.mySQL.query(subQuery, function(err, rows2) {
-                        if (err) return res.sendStatus(500);
-                        var subSubQuery = 'SELECT id, label, description, creationDate FROM comment WHERE propositionId = ' + rows[0].id + ' ';
-                        return self.mySQL.query(subSubQuery, function(err, rows3) {
-                            if (err) return res.sendStatus(500);
-                            if (rows3.length > 0) rows[0].comments = rows3;
-                            return res.json(rows);
-                        });
+                         if (err) {
+				        	console.log(err);
+				         	return res.sendStatus(500); 
+				        }
+                        
+                        
+                        if (rows2.length > 0) rows[0].amendements = rows2;
+                        return res.json(rows);
                     });
                 }
                 return res.json(rows);
