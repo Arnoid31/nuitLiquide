@@ -19,7 +19,7 @@ class AuthenticationWS extends WebService {
         return crypto.randomBytes(48, function(ex, buf) {
             var token = buf.toString('hex');
             
-            var query = 'INSERT INTO token (token, creationDate) VALUES ("' + token + '", NOW())';
+            var query = 'INSERT INTO token (token, creationDate, expirationDate) VALUES ("' + token + '", NOW(), DATE_ADD(NOW(), INTERVAL 30 MINUTE))';
             return self.mySQL.query(query, function(err) {
                 if (err) return res.sendStatus(500);
                 return res.json({

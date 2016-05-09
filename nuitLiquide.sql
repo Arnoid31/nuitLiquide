@@ -67,7 +67,7 @@ CREATE TABLE proposition (
     parentId int unsigned,
     label varchar(255) NOT NULL,
     description longtext NOT NULL,
-    creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creationDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY pk_proposition_id (id),
     KEY i_proposition_domainId (domainId),
     KEY i_proposition_parentId (parentId),
@@ -81,7 +81,7 @@ DROP TABLE IF EXISTS vote;
 CREATE TABLE vote (
     userId int unsigned,
     propositionId int unsigned NOT NULL,
-    pro tinyint(1) unsigned NOT NULL,
+    vote tinyint(1) unsigned NOT NULL,
     UNIQUE KEY (userId, propositionId),
     CONSTRAINT fk_vote_propositionId FOREIGN KEY (propositionId) REFERENCES proposition(id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_vote_userId FOREIGN KEY (userId) REFERENCES user(id) ON DELETE SET NULL ON UPDATE CASCADE
