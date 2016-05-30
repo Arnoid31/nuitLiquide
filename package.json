@@ -2,6 +2,7 @@
   "name": "NuitLiquide",
   "version": "0.1.0",
   "author": "Arnaud Commelin <arnaud.commelin@gmail.com>",
+  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Arnoid31/node_todolist"
