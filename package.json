@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/Arnoid31/node_todolist"
   },
+  "scripts": {
+    "start": "node app.js"
+  },
   "license": "GPL-3.0",
   "description": "API de démocratie liquide, développée très rapidement dans le cadre de Nuit Debout",
   "dependencies": {
